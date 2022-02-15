@@ -5,6 +5,7 @@
 """
 
 import logging
+import torch
 
 from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
 from ignite.handlers import ModelCheckpoint, Timer
@@ -31,11 +32,11 @@ def do_train(
     trainer = create_supervised_trainer(model, optimizer, loss_fn, device=device)
     evaluator = create_supervised_evaluator(model, metrics={'accuracy': Accuracy(),
                                                             'ce_loss': Loss(loss_fn)}, device=device)
-    checkpointer = ModelCheckpoint(output_dir, 'mnist', checkpoint_period, n_saved=10, require_empty=False)
+    checkpointer = ModelCheckpoint(output_dir, 'mnist', save_interval=None, n_saved=10, require_empty=False)
     timer = Timer(average=True)
 
-    trainer.add_event_handler(Events.EPOCH_COMPLETED, checkpointer, {'model': model.state_dict(),
-                                                                     'optimizer': optimizer.state_dict()})
+    trainer.add_event_handler(Events.EPOCH_COMPLETED, checkpointer, {'model': model,
+                                                                     'optimizer': optimizer})
     timer.attach(trainer, start=Events.EPOCH_STARTED, resume=Events.ITERATION_STARTED,
                  pause=Events.ITERATION_COMPLETED, step=Events.ITERATION_COMPLETED)
 

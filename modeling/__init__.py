@@ -9,4 +9,4 @@ from .example_model import ResNet18
 
 def build_model(cfg):
     model = ResNet18(cfg.MODEL.NUM_CLASSES)
-    return model
+    return model.to(cfg.MODEL.DEVICE)

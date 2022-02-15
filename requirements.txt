@@ -1,0 +1,16 @@
+dataset_utilities @ git+ssh://git@gitlab.com/deepsport/dataset_utilities.git@3.9.1
+IPython
+ignite>=0.4.8
+matplotlib>=3.2.2
+numpy>=1.18.5
+opencv-python>=4.1.2
+Pillow
+pyYAML
+yacs>= 0.1.4
+seaborn
+scipy>=1.4.1
+scikit-image>=0.19.1
+scikit-learn>=1.0.2
+torch==1.10.1
+torchvision==0.11.2
+tqdm>=4.41.0

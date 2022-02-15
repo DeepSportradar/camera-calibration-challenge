@@ -7,4 +7,4 @@ SOLVER:
 TEST:
   IMS_PER_BATCH: 256
 
-OUTPUT_DIR: "/mnt/truenas/scratch/xingyu.liao/checkpoints/mnist_template"
+OUTPUT_DIR: "logs/mnist_template"

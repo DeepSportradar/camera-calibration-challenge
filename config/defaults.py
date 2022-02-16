@@ -19,6 +19,7 @@ _C = CN()
 _C.MODEL = CN()
 _C.MODEL.DEVICE = "cuda"
 _C.MODEL.NUM_CLASSES = 10
+_C.MODEL.LOSS = "cross_entropy"
 
 # -----------------------------------------------------------------------------
 # INPUT

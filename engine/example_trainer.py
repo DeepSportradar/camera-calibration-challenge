@@ -32,7 +32,7 @@ def do_train(
     trainer = create_supervised_trainer(model, optimizer, loss_fn, device=device)
     evaluator = create_supervised_evaluator(model, metrics={'accuracy': Accuracy(),
                                                             'ce_loss': Loss(loss_fn)}, device=device)
-    checkpointer = ModelCheckpoint(output_dir, 'mnist', save_interval=None, n_saved=10, require_empty=False)
+    checkpointer = ModelCheckpoint(output_dir, 'model', save_interval=None, n_saved=10, require_empty=False)
     timer = Timer(average=True)
 
     trainer.add_event_handler(Events.EPOCH_COMPLETED, checkpointer, {'model': model,

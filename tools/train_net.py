@@ -20,6 +20,10 @@ from solver import make_optimizer
 
 from utils.logger import setup_logger
 
+LOSSES = {
+    "cross_entropy": F.cross_entropy,
+    "mse_loss": F.mse_loss
+}
 
 def train(cfg):
     model = build_model(cfg)
@@ -32,6 +36,7 @@ def train(cfg):
 
     train_loader = make_data_loader(cfg, is_train=True)
     val_loader = make_data_loader(cfg, is_train=False)
+    loss = LOSSES[cfg.MODEL.LOSS]
 
     do_train(
         cfg,
@@ -40,7 +45,7 @@ def train(cfg):
         val_loader,
         optimizer,
         None,
-        F.cross_entropy,
+        loss,
     )
 
 

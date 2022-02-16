@@ -1,3 +1,6 @@
+MODEL:
+  NUM_CLASSES: 12
+  LOSS: "mse_loss"
 
 INPUT:
   SIZE_TRAIN: 800
@@ -18,4 +21,4 @@ DATASETS:
   TEST: "viewds"
   NUM_ELEMENTS: 1000
 
-OUTPUT_DIR: "logs/mnist_template"
+OUTPUT_DIR: "logs/viewds_baseline"

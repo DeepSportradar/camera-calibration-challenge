@@ -18,7 +18,7 @@ def build_transforms(cfg, is_train=True):
             T.RandomHorizontalFlip(p=cfg.INPUT.PROB),
             T.ToTensor(),
             normalize_transform,
-            RandomErasing(probability=cfg.INPUT.PROB, mean=cfg.INPUT.PIXEL_MEAN)
+            RandomErasing(probability=cfg.INPUT.PROB, mean=cfg.INPUT.PIXEL_MEAN, sh=0.1)
         ])
     else:
         transform = T.Compose([

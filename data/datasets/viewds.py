@@ -9,6 +9,7 @@ from dataset_utilities.ds.instants_dataset.views_transforms import (
 )
 from mlworkflow import TransformedDataset, PickledDataset
 import torch
+from PIL import Image
 
 
 class GenerteViewDS:
@@ -112,7 +113,7 @@ class VIEWDS(torch.utils.data.Dataset):
 
         # Load data and get label
         item = np.load(os.path.join(self.path, f"{fname}"))
-        img = torch.from_numpy(item["image"])
+        img = Image.fromarray(item["image"])
         if self.transform is not None:
             img = self.transform(img)
         y = item["calib"]

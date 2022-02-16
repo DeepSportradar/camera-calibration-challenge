@@ -55,8 +55,7 @@ def make_data_loader(cfg, is_train=True):
         shuffle = False
 
     transforms = build_transforms(cfg, is_train)
-    datasets = build_dataset(cfg, transforms=None, is_train=is_train)
-    print(datasets.path)
+    datasets = build_dataset(cfg, transforms=transforms, is_train=is_train)
     num_workers = cfg.DATALOADER.NUM_WORKERS
     data_loader = data.DataLoader(
         datasets,

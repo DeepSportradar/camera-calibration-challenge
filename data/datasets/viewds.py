@@ -12,7 +12,7 @@ import torch
 from PIL import Image
 
 
-class GenerteViewDS:
+class GenerateViewDS:
     """Transformed View Random Cropper Dataset"""
 
     def __init__(
@@ -63,7 +63,7 @@ class GenerteViewDS:
             else:
                 not_generated_keys.append((fname, key))
         if not_generated_keys:
-            print(f'not_generated_keys: {not_generated_keys}')
+            print(f"not_generated_keys: {not_generated_keys}")
             self._give_it_another_try(not_generated_keys)
 
     def _give_it_another_try(self, not_generated_keys):
@@ -92,9 +92,10 @@ class VIEWDS(torch.utils.data.Dataset):
             path (_type_): _description_
         """
         if download:
-            GenerteViewDS(num_elements=num_elements)
+            GenerateViewDS(num_elements=num_elements)
         root = "VIEWDS"
-        total = len(os.listdir(root))
+        # total = len(os.listdir(root))
+        total = num_elements
         if train:
             self.list_IDs = os.listdir(root)[: int(total * 0.8)]
         else:
@@ -116,6 +117,6 @@ class VIEWDS(torch.utils.data.Dataset):
         img = Image.fromarray(item["image"])
         if self.transform is not None:
             img = self.transform(img)
-        y = item["calib"]
+        y = item["calib"].flatten()
 
         return img, y

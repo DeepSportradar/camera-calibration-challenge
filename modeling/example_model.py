@@ -6,6 +6,7 @@
 
 import numpy as np
 import torch.nn.functional as F
+import torch
 from torch import nn
 
 from layers.conv_layer import conv3x3
@@ -13,7 +14,7 @@ from layers.conv_layer import conv3x3
 
 def conv_init(m):
     classname = m.__class__.__name__
-    if classname.find('Conv') != -1:
+    if classname.find("Conv") != -1:
         nn.init.xavier_uniform_(m.weight, gain=np.sqrt(2))
         if m.bias is not None:
             nn.init.constant_(m.bias, 0)
@@ -32,8 +33,13 @@ class BasicBlock(nn.Module):
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion * planes:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride),
-                nn.BatchNorm2d(self.expansion * planes)
+                nn.Conv2d(
+                    in_planes,
+                    self.expansion * planes,
+                    kernel_size=1,
+                    stride=stride,
+                ),
+                nn.BatchNorm2d(self.expansion * planes),
             )
 
     def forward(self, x):
@@ -74,6 +80,29 @@ class ResNet18(nn.Module):
         out = self.layer3(out)
         out = F.avg_pool2d(out, 8)
         out = out.view(out.size(0), -1)
+        out = self.linear(out)
+
+        return out
+
+
+class ResNet50(nn.Module):
+    def __init__(self, num_classes):
+        super(ResNet50, self).__init__()
+
+        backbone = torch.hub.load(
+            "pytorch/vision:v0.11.3",
+            "resnet50",
+            pretrained=True,
+        )
+        self.features = nn.Sequential(*(list(backbone.children())[:-2]))
+        self.gap = nn.AdaptiveAvgPool2d((1, 1))
+        self.flat = nn.Flatten()
+        self.linear = nn.Linear(2048, num_classes)
+
+    def forward(self, x):
+        out = self.features(x)
+        out = self.gap(out)
+        out = self.flat(out)
         out = self.linear(out)
 
         return out

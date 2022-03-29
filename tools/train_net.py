@@ -9,9 +9,10 @@ import os
 import sys
 from os import mkdir
 
+import torch
 import torch.nn.functional as F
 
-sys.path.append('.')
+sys.path.append(".")
 from config import cfg
 from data import make_data_loader
 from engine.example_trainer import do_train
@@ -20,12 +21,13 @@ from solver import make_optimizer
 
 from utils.logger import setup_logger
 
-LOSSES = {
-    "cross_entropy": F.cross_entropy,
-    "mse_loss": F.mse_loss
-}
+
+LOSSES = {"cross_entropy": F.cross_entropy, "mse_loss": F.mse_loss}
+
 
 def train(cfg):
+    torch.set_default_dtype(torch.float64)
+
     model = build_model(cfg)
     device = cfg.MODEL.DEVICE
 
@@ -50,16 +52,24 @@ def train(cfg):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="PyTorch Template MNIST Training")
+    parser = argparse.ArgumentParser(
+        description="PyTorch Template MNIST Training"
+    )
     parser.add_argument(
         "--config_file", default="", help="path to config file", type=str
     )
-    parser.add_argument("opts", help="Modify config options using the command-line", default=None,
-                        nargs=argparse.REMAINDER)
+    parser.add_argument(
+        "opts",
+        help="Modify config options using the command-line",
+        default=None,
+        nargs=argparse.REMAINDER,
+    )
 
     args = parser.parse_args()
 
-    num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
+    num_gpus = (
+        int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
+    )
 
     if args.config_file != "":
         cfg.merge_from_file(args.config_file)
@@ -76,7 +86,7 @@ def main():
 
     if args.config_file != "":
         logger.info("Loaded configuration file {}".format(args.config_file))
-        with open(args.config_file, 'r') as cf:
+        with open(args.config_file, "r") as cf:
             config_str = "\n" + cf.read()
             logger.info(config_str)
     logger.info("Running with config:\n{}".format(cfg))
@@ -84,5 +94,5 @@ def main():
     train(cfg)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

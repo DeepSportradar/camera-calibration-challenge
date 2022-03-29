@@ -36,9 +36,13 @@ _C.INPUT.MAX_SCALE_TRAIN = 1.2
 # Random probability for image horizontal flip
 _C.INPUT.PROB = 0.5
 # Values to be used for image normalization
-_C.INPUT.PIXEL_MEAN = [0.1307, ]
+_C.INPUT.PIXEL_MEAN = [
+    0.1307,
+]
 # Values to be used for image normalization
-_C.INPUT.PIXEL_STD = [0.3081, ]
+_C.INPUT.PIXEL_STD = [
+    0.3081,
+]
 
 # -----------------------------------------------------------------------------
 # Dataset
@@ -70,6 +74,7 @@ _C.SOLVER.BASE_LR = 0.001
 _C.SOLVER.BIAS_LR_FACTOR = 2
 
 _C.SOLVER.MOMENTUM = 0.9
+_C.SOLVER.AMSGRAD = False
 
 _C.SOLVER.WEIGHT_DECAY = 0.0005
 _C.SOLVER.WEIGHT_DECAY_BIAS = 0
@@ -82,7 +87,7 @@ _C.SOLVER.WARMUP_ITERS = 500
 _C.SOLVER.WARMUP_METHOD = "linear"
 
 _C.SOLVER.CHECKPOINT_PERIOD = 10
-_C.SOLVER.LOG_PERIOD = 100
+_C.SOLVER.LOG_PERIOD = 1
 
 # Number of images per batch
 # This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will

@@ -99,7 +99,7 @@ class VIEWDS(torch.utils.data.Dataset):
         if train:
             self.list_IDs = os.listdir(root)[: int(total * 0.8)]
         else:
-            self.list_IDs = os.listdir(root)[int(total * 0.8) :]
+            self.list_IDs = os.listdir(root)[int(total * 0.8) : total]
         self.path = root
         self.transform = transform
 

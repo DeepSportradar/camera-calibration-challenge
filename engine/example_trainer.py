@@ -52,7 +52,7 @@ def do_train(
     )
     evaluator = create_supervised_evaluator(
         model,
-        metrics={"ce_loss": Loss(loss_fn)},
+        metrics={"ce_loss": MeanSquaredError()},
         device=device,
     )
     checkpointer = ModelCheckpoint(
@@ -110,6 +110,7 @@ def do_train(
         )
 
     if val_loader is not None:
+
         @trainer.on(Events.EPOCH_COMPLETED)
         def log_validation_results(engine):
             evaluator.run(val_loader)

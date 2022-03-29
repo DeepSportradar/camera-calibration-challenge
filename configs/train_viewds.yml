@@ -17,11 +17,11 @@ SOLVER:
   WARMUP_ITERS: 2
 
 TEST:
-  IMS_PER_BATCH: 16
+  IMS_PER_BATCH: 25
 
 DATASETS:
   TRAIN: "viewds"
   TEST: "viewds"
   NUM_ELEMENTS: 100
 
-OUTPUT_DIR: "logs/viewds_baseline_3"
+OUTPUT_DIR: "logs/viewds_baseline_4"

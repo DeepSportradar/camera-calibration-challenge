@@ -2,6 +2,12 @@
 """
 @author:  sherlock
 @contact: sherlockliao01@gmail.com
+
+and
+
+@author:  davide zambrano
+@contact: d.zambrano@sportradar.com
+
 """
 
 import numpy as np
@@ -10,6 +16,8 @@ import torch
 from torch import nn
 
 from layers.conv_layer import conv3x3
+from torchvision.models.segmentation.deeplabv3 import DeepLabHead
+from torchvision import models
 
 
 def conv_init(m):
@@ -106,3 +114,22 @@ class ResNet50(nn.Module):
         out = self.linear(out)
 
         return out
+
+
+def DeepLabv3(outputchannels=1):
+    """DeepLabv3 class with custom head
+    Args:
+        outputchannels (int, optional): The number of output channels
+        in your dataset masks. Defaults to 1.
+    Returns:
+        model: Returns the DeepLabv3 model with the ResNet101 backbone.
+    """
+    # model = torch.hub.load('pytorch/vision:v0.11.3', 'deeplabv3_resnet50', pretrained=True)
+
+    model = models.segmentation.deeplabv3_resnet101(
+        pretrained=True, progress=True
+    )
+    model.classifier = DeepLabHead(2048, outputchannels)
+    # Set the model in training mode
+    model.train()
+    return model

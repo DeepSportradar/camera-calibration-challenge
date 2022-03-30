@@ -22,6 +22,6 @@ TEST:
 DATASETS:
   TRAIN: "viewds"
   TEST: "viewds"
-  NUM_ELEMENTS: 100
+  NUM_ELEMENTS: 1000
 
 OUTPUT_DIR: "logs/viewds_baseline_4"

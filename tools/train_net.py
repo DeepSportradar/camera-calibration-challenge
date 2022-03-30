@@ -2,6 +2,12 @@
 """
 @author:  sherlock
 @contact: sherlockliao01@gmail.com
+
+and
+
+@author:  davide zambrano
+@contact: d.zambrano@sportradar.com
+
 """
 
 import argparse
@@ -17,12 +23,21 @@ from config import cfg
 from data import make_data_loader
 from engine.example_trainer import do_train
 from modeling import build_model
-from solver import make_optimizer
+from solver import make_optimizer, loss_fn_seg, loss_fn_seg_dlv3
 
 from utils.logger import setup_logger
 
 
-LOSSES = {"cross_entropy": F.cross_entropy, "mse_loss": F.mse_loss}
+LOSSES = {
+    "cross_entropy": F.cross_entropy,
+    "mse_loss": F.mse_loss,
+    "NLLLoss": torch.nn.NLLLoss,
+}
+
+LOSS_FUNCTIONS = {
+    "loss_fn_seg": loss_fn_seg,
+    "loss_fn_seg_dlv3": loss_fn_seg_dlv3,
+}
 
 
 def train(cfg):
@@ -39,6 +54,8 @@ def train(cfg):
     train_loader = make_data_loader(cfg, is_train=True)
     val_loader = make_data_loader(cfg, is_train=False)
     loss = LOSSES[cfg.MODEL.LOSS]
+    if cfg.MODEL.SEGMENTATION_LOSS:
+        loss = LOSS_FUNCTIONS[cfg.MODEL.LOSS_FUNCTION](loss)
 
     do_train(
         cfg,

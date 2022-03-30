@@ -17,9 +17,12 @@ from yacs.config import CfgNode as CN
 _C = CN()
 
 _C.MODEL = CN()
+_C.MODEL.ARCHITECTURE = "ResNet18"
 _C.MODEL.DEVICE = "cuda"
 _C.MODEL.NUM_CLASSES = 10
 _C.MODEL.LOSS = "cross_entropy"
+_C.MODEL.SEGMENTATION_LOSS = False
+_C.MODEL.LOSS_FUNCTION = "loss_fn_seg"
 
 # -----------------------------------------------------------------------------
 # INPUT
@@ -43,6 +46,8 @@ _C.INPUT.PIXEL_MEAN = [
 _C.INPUT.PIXEL_STD = [
     0.3081,
 ]
+# Size of the generated image from View dataset (width, height)
+_C.INPUT.GENERATED_VIEW_SIZE = [500, 500]
 
 # -----------------------------------------------------------------------------
 # Dataset
@@ -52,7 +57,7 @@ _C.DATASETS = CN()
 _C.DATASETS.TRAIN = ""
 # List of the dataset names for testing, as present in paths_catalog.py
 _C.DATASETS.TEST = ""
-# List of the dataset names for testing, as present in paths_catalog.py
+# Number of elements to consider for training
 _C.DATASETS.NUM_ELEMENTS = 0
 
 # -----------------------------------------------------------------------------

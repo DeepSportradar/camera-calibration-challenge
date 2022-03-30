@@ -8,12 +8,13 @@ from torch.utils import data
 
 from .datasets.mnist import MNIST
 from .datasets.viewds import VIEWDS
+from .datasets.viewds import SVIEWDS, GenerateSViewDS
 from .transforms import build_transforms
 
-DATASETS = {"mnist": MNIST, "viewds": VIEWDS}
+DATASETS = {"mnist": MNIST, "viewds": VIEWDS, "sviewds": SVIEWDS}
 
 
-def build_dataset(cfg, transforms, is_train=True):
+def build_dataset(cfg, transforms, is_train=True, split=None):
     """Create dataset.
 
     Args:
@@ -31,6 +32,25 @@ def build_dataset(cfg, transforms, is_train=True):
         "transform": transforms,
         "download": False,
     }
+    if cfg.DATASETS.TRAIN == "sviewds":
+        width, height = cfg.INPUT.GENERATED_VIEW_SIZE
+        svds = GenerateSViewDS(
+            output_shape=(
+                width,
+                height,
+            )
+        )
+        if is_train:
+            kwargs = {
+                "vds": svds.train,
+                "transform": transforms,
+            }
+        else:
+            kwargs = {
+                "vds": svds.val,
+                "transform": transforms,
+            }
+
     if cfg.DATASETS.TRAIN == "viewds":
         kwargs["num_elements"] = cfg.DATASETS.NUM_ELEMENTS
     datasets = DATASETS[cfg.DATASETS.TRAIN](**kwargs)

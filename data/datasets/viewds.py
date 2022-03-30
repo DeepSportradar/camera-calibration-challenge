@@ -1,15 +1,24 @@
+"""
+@author:  davide zambrano
+@contact: d.zambrano@sportradar.com
+
+"""
 from tqdm.auto import tqdm
 
 import numpy as np
 import os
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from dataset_utilities.ds.instants_dataset.views_transforms import (
+from deepsport_utilities.ds.instants_dataset import DeepSportDatasetSplitter
+from deepsport_utilities.ds.instants_dataset.views_transforms import (
     CleverViewRandomCropperTransform,
 )
+from deepsport_utilities.court import Court
+from deepsport_utilities.utils import color_cycle_rgb
 from mlworkflow import TransformedDataset, PickledDataset
 import torch
 from PIL import Image
+import torchvision.transforms as T
 
 
 class GenerateViewDS:
@@ -75,8 +84,41 @@ class GenerateViewDS:
                 )
 
 
+class GenerateSViewDS:
+    def __init__(
+        self,
+        vds_picklefile: str = "hg_viewdataset_2.pickle",
+        output_shape: Tuple[int, int] = (1920, 1080),
+    ) -> None:
+        """
+        Args:
+            vds_picklefile (str, optional): _description_. Defaults to "hg_viewdataset.pickle".
+            output_shape (Tuple[int, int], optional): _description_. Defaults to (1920, 1080).
+            num_elements (int, optional): _description_. Defaults to 1000.
+        """
+        absolute_path = os.path.abspath(__file__)
+        absolute_path = os.path.join(*absolute_path.split("/")[:-3])
+
+        print(f"generating data in: {absolute_path}")
+        vds = PickledDataset(os.path.join("/", absolute_path, vds_picklefile))
+        kwargs = {}
+        kwargs["regenerate"] = True
+        self.vds = TransformedDataset(
+            vds,
+            [
+                CleverViewRandomCropperTransform(
+                    output_shape=output_shape, **kwargs
+                )
+            ],
+        )
+        dataset_splitter = DeepSportDatasetSplitter(
+            additional_keys_usage="skip"
+        )
+        (self.train, self.val, self.test) = dataset_splitter(self.vds)
+
+
 class VIEWDS(torch.utils.data.Dataset):
-    "Characterizes a dataset for PyTorch"
+    """A VIEW dataset that returns images and calib objects."""
 
     def __init__(
         self,
@@ -120,3 +162,46 @@ class VIEWDS(torch.utils.data.Dataset):
         y = item["calib"].flatten()
 
         return img, y
+
+
+class SVIEWDS(torch.utils.data.Dataset):
+    """Segmentation VIEW dataset.
+    It returns the segmentation target for the court.
+    """
+
+    def __init__(self, vds, transform: Optional[Callable] = None):
+        "Initialization"
+        self.vds = vds
+        self.vds_keys = list(vds.keys)
+        self.transform = transform
+        # self.target_transform = T.Compose(
+        #     [
+        #         # T.PILToTensor(),
+        #         T.ConvertImageDtype(torch.long),
+        #     ]
+        # )
+
+    def __len__(self):
+        "Denotes the total number of samples"
+        return len(self.vds_keys)
+
+    def __getitem__(self, index):
+        "Generates one sample of data"
+        # Select sample
+        key = self.vds_keys[index]
+        item = self.vds.dataset.query_item(key)
+        # Load data and get label
+        img = Image.fromarray(item.image)
+
+        court = Court(item.rule_type)
+        h, w, c = item.image.shape
+        target = np.zeros((h, w), dtype=np.uint8)
+        court.draw_lines(target, item.calib, color=None)
+        if self.transform is not None:
+            img = self.transform(img)
+        label = {"target": target, "calibP": item.calib.P}
+        # target_img = Image.fromarray(target)
+        return (
+            img,
+            torch.as_tensor(target, dtype=torch.long),
+        )

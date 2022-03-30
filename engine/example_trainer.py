@@ -2,11 +2,18 @@
 """
 @author:  sherlock
 @contact: sherlockliao01@gmail.com
+
+and
+
+@author:  davide zambrano
+@contact: d.zambrano@sportradar.com
+
 """
 
 import logging
 import torch
-from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard.writer import SummaryWriter
+import torch.nn.functional as F
 
 
 from ignite.engine import (
@@ -15,7 +22,13 @@ from ignite.engine import (
     create_supervised_evaluator,
 )
 from ignite.handlers import ModelCheckpoint, Timer
-from ignite.metrics import Accuracy, Loss, RunningAverage, MeanSquaredError
+from ignite.metrics import (
+    Accuracy,
+    Loss,
+    RunningAverage,
+    MeanSquaredError,
+    mIoU,
+)
 
 
 def do_train(
@@ -52,9 +65,11 @@ def do_train(
     )
     evaluator = create_supervised_evaluator(
         model,
-        metrics={"ce_loss": MeanSquaredError()},
+        metrics={"loss": Loss(F.cross_entropy)},
         device=device,
+        output_transform=lambda x, y, y_pred: (y_pred["out"], y),
     )
+
     checkpointer = ModelCheckpoint(
         output_dir,
         "model",
@@ -102,7 +117,7 @@ def do_train(
     def log_training_results(engine):
         evaluator.run(train_loader)
         metrics = evaluator.state.metrics
-        avg_loss = metrics["ce_loss"]
+        avg_loss = metrics["loss"]
         logger.info(
             "Training Results - Epoch: {} Avg Loss: {:.3f}".format(
                 engine.state.epoch, avg_loss
@@ -115,7 +130,7 @@ def do_train(
         def log_validation_results(engine):
             evaluator.run(val_loader)
             metrics = evaluator.state.metrics
-            avg_loss = metrics["ce_loss"]
+            avg_loss = metrics["loss"]
             logger.info(
                 "Validation Results - Epoch: {} Avg Loss: {:.3f}".format(
                     engine.state.epoch, avg_loss

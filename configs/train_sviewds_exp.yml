@@ -32,4 +32,4 @@ DATASETS:
 DATALOADER:
   NUM_WORKERS: 8
 
-OUTPUT_DIR: "logs/sviewds_baseline_exp_v3"
+OUTPUT_DIR: "logs/sviewds_baseline_exp_v4"

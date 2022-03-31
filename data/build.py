@@ -41,6 +41,7 @@ def build_dataset(cfg, transforms, is_train=True, split=None):
     }
     if cfg.DATASETS.TRAIN == "sviewds":
         width, height = cfg.INPUT.GENERATED_VIEW_SIZE
+        def_min, def_max = cfg.INPUT.GENERATED_DEF_PM
         svds = GenerateSViewDS(
             output_shape=(
                 width,

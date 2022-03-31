@@ -23,7 +23,8 @@ SOLVER:
 
 TEST:
   IMS_PER_BATCH: 10
-  WEIGHT: "logs/sviewds_baseline_v3/model_checkpoint_1650.pt"
+  WEIGHT: "logs/sviewds_baseline_v3/model_checkpoint_2090.pt"
+  # 2022-03-31 13:04:59,716 template_model.inference INFO: Validation Results - Cross Entropy Loss: 0.030 - mIoU: 0.714
 
 DATASETS:
   TRAIN: "sviewds"

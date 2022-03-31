@@ -89,6 +89,8 @@ class GenerateSViewDS:
         self,
         vds_picklefile: str = "hg_viewdataset_2.pickle",
         output_shape: Tuple[int, int] = (1920, 1080),
+        def_min: int = 60,
+        def_max: int = 160,
     ) -> None:
         """
         Args:
@@ -101,13 +103,14 @@ class GenerateSViewDS:
 
         print(f"generating data in: {absolute_path}")
         vds = PickledDataset(os.path.join("/", absolute_path, vds_picklefile))
-        kwargs = {}
-        kwargs["regenerate"] = True
         self.vds = TransformedDataset(
             vds,
             [
                 CleverViewRandomCropperTransform(
-                    output_shape=output_shape, **kwargs
+                    output_shape=output_shape,
+                    def_min=def_min,
+                    def_max=def_max,
+                    regenerate=True,
                 )
             ],
         )

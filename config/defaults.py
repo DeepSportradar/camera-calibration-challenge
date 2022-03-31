@@ -49,6 +49,8 @@ _C.INPUT.PIXEL_STD = [
 ]
 # Size of the generated image from View dataset (width, height)
 _C.INPUT.GENERATED_VIEW_SIZE = [500, 500]
+# Range of the generated image of defined pixels per meter
+_C.INPUT.GENERATED_DEF_PM = [20, 60]
 # Wether to apply transforms
 _C.INPUT.TRANSFORMS = True
 

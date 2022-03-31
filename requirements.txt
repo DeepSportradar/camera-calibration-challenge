@@ -1,4 +1,4 @@
-dataset_utilities @ git+ssh://git@gitlab.com/deepsport/dataset_utilities.git@3.9.1
+deepsport-utilities >= 4.0.9
 IPython
 ignite>=0.4.8
 matplotlib>=3.2.2

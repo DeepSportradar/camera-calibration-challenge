@@ -5,7 +5,7 @@ GREEN='\033[1;32m'
 CYAN='\033[1;36m'
 NC='\033[0m' # No Color
 
-BUILD_DIR="/tmp/homography_install"
+BUILD_DIR="/tmp/camera_calibraion_install"
 
 # Make sure cuda is available
 if ! [ -x "$(command -v nvidia-smi)" ]; then
@@ -36,7 +36,7 @@ fi
 
 
 # Python environment setup
-conda_env_name=${1:-minimap}
+conda_env_name=${1:-camera-calibration}
 if ! conda info --envs | grep $conda_env_name; then
     echo $CYAN"Creating conda environment '$conda_env_name'"$NC
     conda create -n $conda_env_name python=3.8
@@ -70,7 +70,7 @@ echo $GREEN"Success"$NC
 
 # Minimap installation
 echo
-echo $CYAN"Installing homography project in edit mode with associated dependencices"$NC
+echo $CYAN"Installing camera-calibration project in edit mode with associated dependencices"$NC
 pip install -r requirements.txt
 pip install -e .
 

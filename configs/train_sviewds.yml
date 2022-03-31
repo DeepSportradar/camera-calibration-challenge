@@ -1,0 +1,36 @@
+MODEL:
+  ARCHITECTURE: "DeepLabv3"
+  NUM_CLASSES: 21
+  LOSS: "cross_entropy"
+  SEGMENTATION_LOSS: True
+  LOSS_FUNCTION: "loss_fn_seg"
+
+INPUT:
+  SIZE_TRAIN: 500
+  SIZE_TEST: 500
+  PIXEL_MEAN: [0.485, 0.456, 0.406]
+  PIXEL_STD: [0.229, 0.224, 0.225]
+  GENERATED_VIEW_SIZE: [480, 270]
+  TRANSFORMS: False
+
+SOLVER:
+  OPTIMIZER_NAME: "AdamW"
+  AMSGRAD: True
+  BASE_LR: 0.001
+  WEIGHT_DECAY: 0.0001
+  IMS_PER_BATCH: 10
+  WARMUP_ITERS: 3
+
+TEST:
+  IMS_PER_BATCH: 10
+  WEIGHT: "logs/sviewds_baseline_v3/model_checkpoint_2090.pt"
+  # 2022-03-31 13:04:59,716 template_model.inference INFO: Validation Results - Cross Entropy Loss: 0.030 - mIoU: 0.714
+
+DATASETS:
+  TRAIN: "sviewds"
+  TEST: "sviewds"
+
+DATALOADER:
+  NUM_WORKERS: 0
+
+OUTPUT_DIR: "logs/sviewds_baseline_v3"

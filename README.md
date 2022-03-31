@@ -1,4 +1,4 @@
-# Camera Calibraion Challenge
+# Camera Calibration Challenge
 
 Mantainer: Davide Zambrano from Sportradar (d.zambrano@sportradar.com)
 

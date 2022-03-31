@@ -6,11 +6,12 @@
 
 
 class loss_fn_seg:
-    def __init__(self, loss):
+    def __init__(self, loss, weight=None):
         self.loss = loss
+        self.weight = None
 
     def __call__(self, ypred, y):
-        return self.loss(ypred["out"], y)
+        return self.loss(ypred["out"], y, weight=self.weight)
 
 
 class loss_fn_seg_dlv3:

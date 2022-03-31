@@ -27,7 +27,7 @@ class GenerateViewDS:
     def __init__(
         self,
         vds_picklefile: str = "hg_viewdataset.pickle",
-        output_shape: Tuple[int, int] = (1920, 1080),
+        output_shape: Tuple[int, int] = (1920, 1080),  # 640x360, 480x270
         num_elements: int = 1000,
         data_folder: str = "./VIEWDS",
     ) -> None:
@@ -174,12 +174,6 @@ class SVIEWDS(torch.utils.data.Dataset):
         self.vds = vds
         self.vds_keys = list(vds.keys)
         self.transform = transform
-        # self.target_transform = T.Compose(
-        #     [
-        #         # T.PILToTensor(),
-        #         T.ConvertImageDtype(torch.long),
-        #     ]
-        # )
 
     def __len__(self):
         "Denotes the total number of samples"
@@ -200,7 +194,6 @@ class SVIEWDS(torch.utils.data.Dataset):
         if self.transform is not None:
             img = self.transform(img)
         label = {"target": target, "calibP": item.calib.P}
-        # target_img = Image.fromarray(target)
         return (
             img,
             torch.as_tensor(target, dtype=torch.long),

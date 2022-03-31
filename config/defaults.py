@@ -23,6 +23,7 @@ _C.MODEL.NUM_CLASSES = 10
 _C.MODEL.LOSS = "cross_entropy"
 _C.MODEL.SEGMENTATION_LOSS = False
 _C.MODEL.LOSS_FUNCTION = "loss_fn_seg"
+_C.MODEL.LOSS_WEIGHT_BACKGROUND = 1.0
 
 # -----------------------------------------------------------------------------
 # INPUT
@@ -48,6 +49,8 @@ _C.INPUT.PIXEL_STD = [
 ]
 # Size of the generated image from View dataset (width, height)
 _C.INPUT.GENERATED_VIEW_SIZE = [500, 500]
+# Wether to apply transforms
+_C.INPUT.TRANSFORMS = True
 
 # -----------------------------------------------------------------------------
 # Dataset

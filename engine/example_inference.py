@@ -12,7 +12,7 @@ import logging
 
 from ignite.engine import Events
 from ignite.engine import create_supervised_evaluator
-from ignite.metrics import Loss
+from ignite.metrics import Loss, mIoU, confusion_matrix
 import torch.nn.functional as F
 
 
@@ -21,10 +21,15 @@ def inference(cfg, model, val_loader):
 
     logger = logging.getLogger("template_model.inference")
     logger.info("Start inferencing")
+    cm = confusion_matrix.ConfusionMatrix(num_classes=21)
 
     evaluator = create_supervised_evaluator(
         model,
-        metrics={"loss": Loss(F.cross_entropy)},
+        metrics={
+            "loss": Loss(F.cross_entropy),
+            "mIoU": mIoU(cm, ignore_index=0),
+            "cm": cm,
+        },
         device=device,
         output_transform=lambda x, y, y_pred: (y_pred["out"], y),
     )
@@ -34,8 +39,11 @@ def inference(cfg, model, val_loader):
     def print_validation_results(engine):
         metrics = evaluator.state.metrics
         loss = metrics["loss"]
+        miou = metrics["mIoU"]
         logger.info(
-            "Validation Results - Cross Entropy Loss: {:.3f}".format(loss)
+            "Validation Results - Cross Entropy Loss: {:.3f} - mIoU: {:.3f}".format(
+                loss, miou
+            )
         )
 
     evaluator.run(val_loader)

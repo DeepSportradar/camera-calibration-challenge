@@ -22,13 +22,7 @@ from ignite.engine import (
     create_supervised_evaluator,
 )
 from ignite.handlers import ModelCheckpoint, Timer
-from ignite.metrics import (
-    Accuracy,
-    Loss,
-    RunningAverage,
-    MeanSquaredError,
-    mIoU,
-)
+from ignite.metrics import Loss, RunningAverage, mIoU, confusion_matrix
 
 
 def do_train(
@@ -60,12 +54,14 @@ def do_train(
     logger = logging.getLogger("template_model.train")
     logger.info("Start training")
     tensor_board_writer = SummaryWriter()
+
+    cm = confusion_matrix.ConfusionMatrix(num_classes=cfg.MODEL.NUM_CLASSES)
     trainer = create_supervised_trainer(
         model, optimizer, loss_fn, device=device
     )
     evaluator = create_supervised_evaluator(
         model,
-        metrics={"loss": Loss(F.cross_entropy)},
+        metrics={"loss": Loss(F.cross_entropy), "mIoU": mIoU(cm)},
         device=device,
         output_transform=lambda x, y, y_pred: (y_pred["out"], y),
     )
@@ -118,10 +114,14 @@ def do_train(
         evaluator.run(train_loader)
         metrics = evaluator.state.metrics
         avg_loss = metrics["loss"]
+        miou = metrics["mIoU"]
         logger.info(
-            "Training Results - Epoch: {} Avg Loss: {:.3f}".format(
-                engine.state.epoch, avg_loss
+            "Training Results - Epoch: {} Avg Loss: {:.3f} mIoU: {:.3f}".format(
+                engine.state.epoch, avg_loss, miou
             )
+        )
+        tensor_board_writer.add_scalar(
+            "Avg Loss/train", avg_loss, engine.state.epoch
         )
 
     if val_loader is not None:
@@ -131,14 +131,16 @@ def do_train(
             evaluator.run(val_loader)
             metrics = evaluator.state.metrics
             avg_loss = metrics["loss"]
+            miou = metrics["mIoU"]
             logger.info(
-                "Validation Results - Epoch: {} Avg Loss: {:.3f}".format(
-                    engine.state.epoch, avg_loss
+                "Validation Results - Epoch: {} Avg Loss: {:.3f} mIoU: {:.3f}".format(
+                    engine.state.epoch, avg_loss, miou
                 )
             )
             tensor_board_writer.add_scalar(
                 "Loss/val", avg_loss, engine.state.epoch
             )
+            tensor_board_writer.add_scalar("mIoU", miou, engine.state.epoch)
             tensor_board_writer.flush()
 
     # adding handlers using `trainer.on` decorator API

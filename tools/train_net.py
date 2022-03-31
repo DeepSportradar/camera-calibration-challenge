@@ -55,7 +55,12 @@ def train(cfg):
     val_loader = make_data_loader(cfg, is_train=False)
     loss = LOSSES[cfg.MODEL.LOSS]
     if cfg.MODEL.SEGMENTATION_LOSS:
-        loss = LOSS_FUNCTIONS[cfg.MODEL.LOSS_FUNCTION](loss)
+        kwargs = {}
+        if cfg.MODEL.LOSS_WEIGHT_BACKGROUND < 1:
+            weight = torch.ones((cfg.MODEL.NUM_CLASSES,))
+            weight[0] *= cfg.MODEL.LOSS_WEIGHT_BACKGROUND
+            kwargs["weight"] = weight
+        loss = LOSS_FUNCTIONS[cfg.MODEL.LOSS_FUNCTION](loss, **kwargs)
 
     do_train(
         cfg,

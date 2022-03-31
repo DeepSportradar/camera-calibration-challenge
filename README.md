@@ -6,7 +6,7 @@ We present the "Camera Calibration Challenge" for ACM MMSports 2022 the 5th Inte
 
 The "Camera Calibration Challenge" aims at predicting the camera calibration parameters from images taken from basketball games.
 
-This repo is based on the Pytorch Project Template available [here](https://github.com/L1aoXingyu/Deep-Learning-Project-Template). We want to thank the authors for providing this tool, please refer to the original repo for full documentation. This version applies some changes to the original code to specifically adapt it to the "Camera Calibration Challenge" for ACM MMSports 2022.
+This repo is based on the [Pytorch Project Template](https://github.com/L1aoXingyu/Deep-Learning-Project-Template). We want to thank the authors for providing this tool, please refer to the original repo for the full documentation. This version applies some changes to the original code to specifically adapt it to the "Camera Calibration Challenge" for ACM MMSports 2022.
 
 # Requirements
 
@@ -14,8 +14,6 @@ This repo is based on the Pytorch Project Template available [here](https://gith
 
 - [In a Nutshell](#in-a-nutshell)
 - [In Details](#in-details)
-- [Future Work](#future-work)
-- [Contributing](#contributing)
 - [Acknowledgments](#acknowledgments)
 
 # In a Nutshell

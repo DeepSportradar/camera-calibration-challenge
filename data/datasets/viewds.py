@@ -33,14 +33,14 @@ class GenerateViewDS:
 
     def __init__(
         self,
-        vds_picklefile: str = "hg_viewdataset_2.pickle",
+        vds_picklefile: str = "dataset/camera_calib_viewdataset.pickle",
         output_shape: Tuple[int, int] = (1920, 1080),  # 640x360, 480x270
         num_elements: int = 1000,
         data_folder: str = "./VIEWDS",
     ) -> None:
         """
         Args:
-            vds_picklefile (str, optional): _description_. Defaults to "hg_viewdataset_2.pickle".
+            vds_picklefile (str, optional): _description_. Defaults to "camera_calib_viewdataset.pickle".
             output_shape (Tuple[int, int], optional): _description_. Defaults to (1920, 1080).
             num_elements (int, optional): _description_. Defaults to 1000.
         """
@@ -141,14 +141,14 @@ class VIEWDS(torch.utils.data.Dataset):
 class GenerateSViewDS:
     def __init__(
         self,
-        vds_picklefile: str = "hg_viewdataset_2.pickle",
+        vds_picklefile: str = "dataset/camera_calib_viewdataset.pickle",
         output_shape: Tuple[int, int] = (1920, 1080),
         def_min: int = 60,
         def_max: int = 160,
     ) -> None:
         """
         Args:
-            vds_picklefile (str, optional): _description_. Defaults to "hg_viewdataset_2.pickle".
+            vds_picklefile (str, optional): _description_. Defaults to "camera_calib_viewdataset.pickle".
             output_shape (Tuple[int, int], optional): _description_. Defaults to (1920, 1080).
             num_elements (int, optional): _description_. Defaults to 1000.
         """

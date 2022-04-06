@@ -50,4 +50,30 @@ Moreover, data are handeled by:
 
 # In Details
 
+## Download and prepare the dataset
+
+The dataset can be found [here](https://www.kaggle.com/datasets/deepsportradar/basketball-instants-dataset). It can be downloaded and unzipped manually in the `basketball-instants-dataset/` folder of the project.
+
+We will here download it programmatically. First install the kaggle CLI.
+
+```bash
+pip install kaggle
+```
+
+Go to your Kaggle Account page and click on `Create new API Token` to download the file to be saved as `~/.kaggle/kaggle.json` for authentication.
+
+```bash
+kaggle datasets download deepsportradar/basketball-instants-dataset
+mkdir basketball-instants-dataset
+unzip -qo ./basketball-instants-dataset.zip -d basketball-instants-dataset
+```
+
+The dataset has to be pre-proccessed to be used, please run:
+
+```bash
+python tools/download_dataset.py --dataset-folder ./basketball-instants-dataset --output-folder dataset
+```
+
+The processed dataset is then contained in a `pickle` file in the `dataset` folder. Please refer to `.data\datasets\viewds.py` methods as examples of usage. Specifically the class `GenerateSViewDS` applies the required transformations and splits the keys into `train`, `val` and `test`. Please consider that the `test` keys of this dataset are not the ones used for the challenge evaluation (those keys, without annotations, will be provided in a second phase of the challenge). The class `SVIEWDS` is an example of `torch.utils.data.Dataset` for PyTorch users. Finally, note that transformations are applied at each query of the key, thus returning a potentially infinite pairs of image (views) and calibration matrix. A pseudo-random transformation is applied for the `val` and `test` keys, thus views are fixed for these splits.
+
 # Acknowledgments

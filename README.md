@@ -1,6 +1,3 @@
-# CHALLENGE START OFFICIALLY APRIL 6th. Stayed tuned.
-
-
 # Camera Calibration Challenge
 
 Mantainer: Davide Zambrano from Sportradar (d.zambrano@sportradar.com)

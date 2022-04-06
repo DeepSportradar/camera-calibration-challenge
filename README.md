@@ -18,6 +18,12 @@ This repo is based on the [Pytorch Project Template](https://github.com/L1aoXing
 
 # In a Nutshell
 
+The purpose of this challenge is to predict the camera calibration parameters from a single frame of a basketball game. Participants have access to a dataset of 728 pairs of images and camera calibration parameters. By default these pairs are devided in train (548), val (96) and test (84) splits. Note that this test split is different from the one on which the challenge participants will be evaluated on. Therefore, all the 728 examples can be used for the training purpose.
+
+Participants are encuraged to explore different methods to predict the camera calibration parameters. However, a baseline will be provided as described in the [In Details](#in-details) section.
+
+Predictions will be evaluated based on a [Mean Squared Error](https://en.wikipedia.org/wiki/Mean_squared_error) of the projection error of 6 points--left, center and right extremities at the middle and bottom parts of the frame--in the 3D coordinates.
+
 # Installation
 
 A convenience [bash script](./install.sh) is provided that sets up the python environment needed to run the camera-calibration-challenge project.

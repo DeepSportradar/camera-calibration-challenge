@@ -51,6 +51,10 @@ _C.INPUT.PIXEL_STD = [
 _C.INPUT.GENERATED_VIEW_SIZE = [500, 500]
 # Range of the generated image of defined pixels per meter
 _C.INPUT.GENERATED_DEF_PM = [20, 60]
+# This controls the generated View size and the DEF_PM together
+# Then final resolution would be MULTIPLICATIVE_FACTOR * GENERATED_VIEW_SIZE
+# Then final def_pm would be MULTIPLICATIVE_FACTOR * GENERATED_DEF_PM
+_C.INPUT.MULTIPLICATIVE_FACTOR = 1
 # Wether to apply transforms
 _C.INPUT.TRANSFORMS = True
 
@@ -64,6 +68,8 @@ _C.DATASETS.TRAIN = ""
 _C.DATASETS.TEST = ""
 # Number of elements to consider for training
 _C.DATASETS.NUM_ELEMENTS = 0
+# Enables evaluation mode
+_C.DATASETS.EVALUATION = False
 
 # -----------------------------------------------------------------------------
 # DataLoader

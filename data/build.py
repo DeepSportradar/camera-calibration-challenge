@@ -40,13 +40,21 @@ def build_dataset(cfg, transforms, is_train=True, split=None):
         "download": False,
     }
     if cfg.DATASETS.TRAIN == "sviewds":
-        width, height = cfg.INPUT.GENERATED_VIEW_SIZE
-        def_min, def_max = cfg.INPUT.GENERATED_DEF_PM
+        width, height = (
+            cfg.INPUT.MULTIPLICATIVE_FACTOR * cfg.INPUT.GENERATED_VIEW_SIZE[0],
+            cfg.INPUT.MULTIPLICATIVE_FACTOR * cfg.INPUT.GENERATED_VIEW_SIZE[1],
+        )
+        def_min, def_max = (
+            cfg.INPUT.MULTIPLICATIVE_FACTOR * cfg.INPUT.GENERATED_DEF_PM[0],
+            cfg.INPUT.MULTIPLICATIVE_FACTOR * cfg.INPUT.GENERATED_DEF_PM[1],
+        )
         svds = GenerateSViewDS(
             output_shape=(
                 width,
                 height,
-            )
+            ),
+            def_min=def_min,
+            def_max=def_max,
         )
         if is_train:
             kwargs = {
@@ -55,9 +63,11 @@ def build_dataset(cfg, transforms, is_train=True, split=None):
             }
         else:
             kwargs = {
-                "vds": svds.val,
+                "vds": svds.test,
                 "transform": transforms,
             }
+        if cfg.DATASETS.EVALUATION:
+            kwargs["return_camera"] = True
 
     if cfg.DATASETS.TRAIN == "viewds":
         kwargs["num_elements"] = cfg.DATASETS.NUM_ELEMENTS

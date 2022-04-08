@@ -49,7 +49,7 @@ def save_predictions_to_json(
 
 def run_metrics(
     json_file: str = "predictions.json",
-    ground_truth: str = "ground_truth_test.json",
+    ground_truth: str = "ground_truth_val.json",
 ) -> None:
     """Compute metrics from JSON
 

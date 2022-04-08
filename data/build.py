@@ -63,7 +63,7 @@ def build_dataset(cfg, transforms, is_train=True, split=None):
             }
         else:
             kwargs = {
-                "vds": svds.test,
+                "vds": svds.val,
                 "transform": transforms,
             }
         if cfg.DATASETS.EVALUATION:

@@ -159,7 +159,7 @@ class GenerateSViewDS:
             vds,
             [
                 UndistortTransform(),
-                CleverViewRandomCropperTransform(
+                ApplyRandomTransform(
                     output_shape=output_shape,
                     def_min=def_min,
                     def_max=def_max,
@@ -198,7 +198,7 @@ class SVIEWDS(torch.utils.data.Dataset):
         "Generates one sample of data"
         # Select sample
         key = self.vds_keys[index]
-        item = self.vds.dataset.query_item(key, retry=100)
+        item = self.vds.dataset.query_item(key)
         # Load data and get label
         img = Image.fromarray(item.image)
 

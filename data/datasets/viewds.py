@@ -3,8 +3,8 @@
 @contact: d.zambrano@sportradar.com
 
 """
-from typing import Any, Callable, Dict, List, Optional, Tuple
-from tqdm.auto import tqdm
+from typing import Callable, Optional, Tuple
+import os
 import random
 import dataclasses
 import copy
@@ -12,10 +12,8 @@ from calib3d.calib import parameters_to_affine_transform
 
 
 import torch
-import torchvision.transforms as T
 from mlworkflow import TransformedDataset, PickledDataset
 import numpy as np
-import os
 from PIL import Image
 
 
@@ -161,7 +159,7 @@ class GenerateSViewDS:
             vds,
             [
                 UndistortTransform(),
-                ApplyRandomTransform(
+                CleverViewRandomCropperTransform(
                     output_shape=output_shape,
                     def_min=def_min,
                     def_max=def_max,
@@ -200,7 +198,7 @@ class SVIEWDS(torch.utils.data.Dataset):
         "Generates one sample of data"
         # Select sample
         key = self.vds_keys[index]
-        item = self.vds.dataset.query_item(key)
+        item = self.vds.dataset.query_item(key, retry=100)
         # Load data and get label
         img = Image.fromarray(item.image)
 

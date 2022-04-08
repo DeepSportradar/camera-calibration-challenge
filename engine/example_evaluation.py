@@ -8,19 +8,18 @@
 @contact: d.zambrano@sportradar.com
 
 """
-from typing import List
-import os
+from typing import List, Dict
 import json
 import logging
 
 from ignite.engine import Events
 from ignite.engine import create_supervised_evaluator
-from ignite.metrics import Loss, mIoU, confusion_matrix, MeanAbsoluteError
+from ignite.metrics import confusion_matrix, MeanAbsoluteError
 import torch.nn.functional as F
 import numpy as np
 
 import torch
-from deepsport_utilities.calib import Point2D, Calib
+from deepsport_utilities.calib import Point2D, Point3D, Calib
 
 from modeling.example_camera_model import compute_camera
 from utils.intersections import find_intersections
@@ -35,7 +34,7 @@ TEST_2D_POINTS = Point2D(
 
 
 def save_predictions_to_json(
-    results_list: List[np.ndarray],
+    results_list: List[Dict[str, List[np.ndarray]]],
     json_file: str = "predictions.json",
 ) -> None:
     """Create JSON format results
@@ -50,6 +49,7 @@ def save_predictions_to_json(
 
 def run_metrics(
     json_file: str = "predictions.json",
+    ground_truth: str = "ground_truth_test.json",
 ) -> None:
     """Compute metrics from JSON
 
@@ -58,32 +58,33 @@ def run_metrics(
     """
     with open(json_file, "r") as f:
         data = f.read()
+    with open(ground_truth, "r") as f:
+        ground_truth = f.read()
 
     default_h = np.eye(3, 4)
     default_h[2, 3] = 1.0
 
     obj = json.loads(data)
+    obj_gt = json.loads(ground_truth)
 
-    wid_, hei_ = (obj[0]["width"], obj[0]["height"])
+    wid_, hei_ = (obj_gt[0]["width"], obj_gt[0]["height"])
     test_2d_ponts = TEST_2D_POINTS * [[wid_], [hei_]]
-
-    obj = obj[1:]
 
     accuracy = 0
     mse_ = []
 
-    for dat in obj:
-        if dat["predicted_calib"] == default_h:
+    for dat, gt in zip(obj, obj_gt[1:]):
+        if dat["P"] == default_h:
             continue
         else:
             accuracy += 1
             calib = Calib.from_P(
-                np.array(dat["predicted_calib"]).reshape(3, 4),
+                np.array(dat["P"]).reshape(3, 4),
                 width=wid_,
                 height=hei_,
             )
             calib_gt = Calib.from_P(
-                np.array(dat["gt_calib"]).reshape(3, 4),
+                np.array(gt["P"]).reshape(3, 4),
                 width=wid_,
                 height=hei_,
             )
@@ -91,7 +92,7 @@ def run_metrics(
             y = calib_gt.project_2D_to_3D(test_2d_ponts, Z=0)
 
             mse_.append(np.sqrt(np.square(np.subtract(y_pred, y)).mean()))
-    print(f"Accuracy: {accuracy}, discounted MSE: {np.mean(mse_)} m")
+    print(f"Accuracy: {accuracy}, discounted MSE: {np.mean(mse_)} cm")
 
 
 def json_serialisable(array: np.ndarray) -> List[float]:
@@ -103,6 +104,9 @@ def json_serialisable(array: np.ndarray) -> List[float]:
     Returns:
         List[float]: reformatted 1-dim list of floats.
     """
+    if not isinstance(array, np.ndarray) or isinstance(array, Point3D):
+        array = np.array(array)
+
     array_slice = array.reshape(
         -1,
     )
@@ -118,14 +122,13 @@ class CameraTransform:
             cfg.INPUT.MULTIPLICATIVE_FACTOR * cfg.INPUT.GENERATED_VIEW_SIZE[1],
         )
         self.test_2d_ponts = TEST_2D_POINTS * [[self.width], [self.height]]
-        params = {"width": self.width, "height": self.height}
-        self.dumpable_list = [params]
+        self.dumpable_list = []
 
     def __call__(self, x, y, y_pred):
 
         points2d, points3d = find_intersections(
-            np.squeeze(y_pred["out"].cpu().numpy().astype(np.float32))
-            # np.squeeze(y["target"].cpu().numpy().astype(np.float32))
+            # np.squeeze(y_pred["out"].cpu().numpy().astype(np.float32))
+            np.squeeze(y["target"].cpu().numpy().astype(np.float32))
         )  # here use actual prediction
 
         calib = compute_camera(points2d, points3d, (self.height, self.width))
@@ -136,9 +139,9 @@ class CameraTransform:
         )
         data = {
             "numper of points2d": len(points2d),
-            "predicted_calib": json_serialisable(calib.P),
-            "gt_calib": json_serialisable(calib_gt.P),
         }
+        for key, value in calib.dict.items():
+            data.update({key: json_serialisable(value)})
         self.dumpable_list.append(data)
 
         y_pred = calib.project_2D_to_3D(self.test_2d_ponts, Z=0)

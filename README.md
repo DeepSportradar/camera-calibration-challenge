@@ -2,7 +2,7 @@
 
 Mantainer: Davide Zambrano from Sportradar (d.zambrano@sportradar.com)
 
-We present the "Camera Calibration Challenge" for ACM MMSports 2022 the 5th International ACM Workshop on Multimedia Content Analysis in Sports. This year, MMSports proposes a competition where participants will compete over State-of-the-art problems applied to real-world sport specific data. The competition is made of 4 individual challenges, each of which is sponsored by Sportradar with a $1'000.00 prize.
+We present the "Camera Calibration Challenge" for ACM MMSports 2022 the 5th International ACM Workshop on Multimedia Content Analysis in Sports. This year, MMSports proposes a competition where participants will compete over State-of-the-art problems applied to real-world sport specific data. The competition is made of 4 individual challenges, each of which is sponsored by [Sportradar](https://www.sportradar.com) with a $1'000.00 prize.
 
 The "Camera Calibration Challenge" aims at predicting the camera calibration parameters from images taken from basketball games.
 
@@ -14,6 +14,12 @@ This repo is based on the [Pytorch Project Template](https://github.com/L1aoXing
 - [Installation](#installation)
 - [Requirements](#requirements)
 - [In Details](#in-details)
+
+  - [Download and prepare the dataset](#download-and-prepare-the-dataset)
+  - [Challenge rules](#challenge-rules)
+  - [The Baseline](#the-baseline)
+  - [Submission format](#submission-format)
+
 - [Acknowledgments](#acknowledgments)
 
 # In a Nutshell
@@ -75,5 +81,25 @@ python tools/download_dataset.py --dataset-folder ./basketball-instants-dataset 
 ```
 
 The processed dataset is then contained in a `pickle` file in the `dataset` folder. Please refer to `.data\datasets\viewds.py` methods as examples of usage. Specifically the class `GenerateSViewDS` applies the required transformations and splits the keys into `train`, `val` and `test`. Please consider that the `test` keys of this dataset are not the ones used for the challenge evaluation (those keys, without annotations, will be provided in a second phase of the challenge). The class `SVIEWDS` is an example of `torch.utils.data.Dataset` for PyTorch users. Finally, note that transformations are applied at each query of the key, thus returning a potentially infinite pairs of image (views) and calibration matrix. A pseudo-random transformation is applied for the `val` and `test` keys, thus views are fixed for these splits.
+
+Each key in the dataset is associated with an item which contains the images to be used as input and the Calib object from [calib3d](https://github.com/ispgroupucl/calib3d) library, which is what participants should predict.
+
+Images are creted as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts.
+
+The Calib object is built around the K (calibration), T (translation) and R (rotation) matrixes (reference [Camera matrix](https://en.wikipedia.org/wiki/Camera_matrix))
+
+## Challenge rules
+
+The challenge goal is to obtain the best MSE on images that were not seen during training. In particular, the leaderboards that provide rewards will be built on an unannotated challenge set that will be provided late in June.
+
+The competitors are asked to create models that only rely on the provided data for training. (except for initial weights that can come from well-established public methods pre-trained on public data. This must be clearly stated in publication/report)
+
+Please see the challenge page for more details: <https://deepsportradar.github.io/challenge.html>.
+
+## The Baseline
+
+We encurage participants to find innovative solutions to solve the camera
+
+## Submission format
 
 # Acknowledgments

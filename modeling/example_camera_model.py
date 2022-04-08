@@ -37,9 +37,9 @@ def compute_camera(points2d, points3d, output_shape):
         try:
             calib = Calib(width=width, height=height, T=T, R=R, K=K, kc=kc)
         except np.linalg.LinAlgError:
-            print('no')
+            print("no")
             pass
     # knowing that there's no distortion
-    # calib = calib.update(kc=None)
+    calib = calib.update(kc=None)
 
     return calib

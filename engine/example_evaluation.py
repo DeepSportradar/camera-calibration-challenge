@@ -49,7 +49,7 @@ def save_predictions_to_json(
 
 def run_metrics(
     json_file: str = "predictions.json",
-    ground_truth: str = "ground_truth_val.json",
+    ground_truth: str = "ground_truth_test.json",
 ) -> None:
     """Compute metrics from JSON
 
@@ -64,6 +64,12 @@ def run_metrics(
     default_h = np.eye(3, 4)
     default_h[2, 3] = 1.0
 
+    mean_h = [
+        [1.94421059e03, -2.34553735e02, 1.61330395e02, -1.89485410e06],
+        [-1.72322461e01, 5.88543639e02, 1.93678628e03, 2.69150981e05],
+        [4.89042879e-02, -8.25861073e-01, 4.17496411e-01, 2.73299170e03],
+    ]
+
     obj = json.loads(data)
     obj_gt = json.loads(ground_truth)
 
@@ -74,24 +80,30 @@ def run_metrics(
     mse_ = []
 
     for dat, gt in zip(obj, obj_gt[1:]):
-        if dat["P"] == default_h:
-            continue
+        predicted_P = np.array(dat["P"]).reshape(3, 4)
+        if np.allclose(predicted_P, default_h):
+            calib = Calib.from_P(
+                np.array(mean_h),
+                width=wid_,
+                height=hei_,
+            )
+            # continue
         else:
             accuracy += 1
             calib = Calib.from_P(
-                np.array(dat["P"]).reshape(3, 4),
+                predicted_P,
                 width=wid_,
                 height=hei_,
             )
-            calib_gt = Calib.from_P(
-                np.array(gt["P"]).reshape(3, 4),
-                width=wid_,
-                height=hei_,
-            )
-            y_pred = calib.project_2D_to_3D(test_2d_ponts, Z=0)
-            y = calib_gt.project_2D_to_3D(test_2d_ponts, Z=0)
+        calib_gt = Calib.from_P(
+            np.array(gt["P"]).reshape(3, 4),
+            width=wid_,
+            height=hei_,
+        )
+        y_pred = calib.project_2D_to_3D(test_2d_ponts, Z=0)
+        y = calib_gt.project_2D_to_3D(test_2d_ponts, Z=0)
 
-            mse_.append(np.sqrt(np.square(np.subtract(y_pred, y)).mean()))
+        mse_.append(np.sqrt(np.square(np.subtract(y_pred, y)).mean()))
     print(f"Accuracy: {accuracy}, discounted MSE: {np.mean(mse_)} cm")
 
 

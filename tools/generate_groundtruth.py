@@ -42,7 +42,7 @@ def generate_gt(cfg, val_loader):
             data.update({key: json_serialisable(value)})
         dumpable_list.append(data)
 
-    save_predictions_to_json(dumpable_list, "ground_truth_val.json")
+    save_predictions_to_json(dumpable_list, "ground_truth_train.json")
     print("Done.")
 
 

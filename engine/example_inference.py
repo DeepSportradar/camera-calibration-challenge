@@ -17,6 +17,13 @@ import torch.nn.functional as F
 
 
 def inference(cfg, model, val_loader):
+    """Inference of the segmentation model and metrics.
+
+    Args:
+        cfg (_type_): _description_
+        model (_type_): _description_
+        val_loader (_type_): _description_
+    """
     device = cfg.MODEL.DEVICE
 
     logger = logging.getLogger("template_model.inference")

@@ -3,7 +3,14 @@ import cv2
 from deepsport_utilities.calib import Calib, Point2D, Point3D
 
 
-def compute_camera(points2d, points3d, output_shape):
+MEAN_H = [
+    [1.94421059e03, -2.34553735e02, 1.61330395e02, -1.89485410e06],
+    [-1.72322461e01, 5.88543639e02, 1.93678628e03, 2.69150981e05],
+    [4.89042879e-02, -8.25861073e-01, 4.17496411e-01, 2.73299170e03],
+]
+
+
+def compute_camera_model(points2d, points3d, output_shape):
 
     height, width = output_shape
     h = np.eye(3, 4)

@@ -21,7 +21,7 @@ import numpy as np
 import torch
 from deepsport_utilities.calib import Point2D, Point3D, Calib
 
-from modeling.example_camera_model import compute_camera
+from modeling.example_camera_model import compute_camera_model
 from utils.intersections import find_intersections
 
 
@@ -64,12 +64,6 @@ def run_metrics(
     default_h = np.eye(3, 4)
     default_h[2, 3] = 1.0
 
-    mean_h = [
-        [1.94421059e03, -2.34553735e02, 1.61330395e02, -1.89485410e06],
-        [-1.72322461e01, 5.88543639e02, 1.93678628e03, 2.69150981e05],
-        [4.89042879e-02, -8.25861073e-01, 4.17496411e-01, 2.73299170e03],
-    ]
-
     obj = json.loads(data)
     obj_gt = json.loads(ground_truth)
 
@@ -81,13 +75,12 @@ def run_metrics(
 
     for dat, gt in zip(obj, obj_gt[1:]):
         predicted_P = np.array(dat["P"]).reshape(3, 4)
-        if np.allclose(predicted_P, default_h):
+        if not predicted_P:
             calib = Calib.from_P(
-                np.array(mean_h),
+                np.array(default_h),
                 width=wid_,
                 height=hei_,
             )
-            # continue
         else:
             accuracy += 1
             calib = Calib.from_P(
@@ -143,7 +136,9 @@ class CameraTransform:
             np.squeeze(y["target"].cpu().numpy().astype(np.float32))
         )  # here use actual prediction
 
-        calib = compute_camera(points2d, points3d, (self.height, self.width))
+        calib = compute_camera_model(
+            points2d, points3d, (self.height, self.width)
+        )
         calib_gt = Calib.from_P(
             np.squeeze(y["calib"].cpu().numpy().astype(np.float32)),
             width=self.width,
@@ -163,6 +158,13 @@ class CameraTransform:
 
 
 def evaluation(cfg, model, val_loader):
+    """Evaluation script.
+
+    Args:
+        cfg (_type_): config file
+        model (_type_): model used for preditctions
+        val_loader (_type_): dataset loader
+    """
     device = cfg.MODEL.DEVICE
 
     logger = logging.getLogger("template_model.evaluation")

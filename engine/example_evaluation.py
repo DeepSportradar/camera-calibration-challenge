@@ -25,6 +25,8 @@ from modeling.example_camera_model import compute_camera_model
 from utils.intersections import find_intersections
 
 
+EVAL_GT = {"val": "ground_truth_val.json", "test": "ground_truth_test.json"}
+
 TEST_2D_POINTS = Point2D(
     [
         [1, 1, 1 / 2, 1 / 2, 0, 0],
@@ -51,10 +53,11 @@ def run_metrics(
     json_file: str = "predictions.json",
     ground_truth: str = "ground_truth_test.json",
 ) -> None:
-    """Compute metrics from JSON
+    """Compute metrics from JSON. In case of empty dictionary, a default P is provided.
 
     Args:
-        json_file (str, optional): Results saved in JSON file. Defaults to "predictions.json".
+        json_file (str): Results saved in JSON file. Defaults to "predictions.json".
+        ground_truth (str): The ground truth camera model in JSON format.
     """
     with open(json_file, "r") as f:
         data = f.read()
@@ -74,7 +77,7 @@ def run_metrics(
     mse_ = []
 
     for dat, gt in zip(obj, obj_gt[1:]):
-        predicted_P = np.array(dat["P"]).reshape(3, 4)
+        predicted_P = dat.get("P", None)
         if not predicted_P:
             calib = Calib.from_P(
                 np.array(default_h),
@@ -82,6 +85,7 @@ def run_metrics(
                 height=hei_,
             )
         else:
+            predicted_P = np.array(predicted_P).reshape(3, 4)
             accuracy += 1
             calib = Calib.from_P(
                 predicted_P,
@@ -191,4 +195,4 @@ def evaluation(cfg, model, val_loader):
     evaluator.run(val_loader)
 
     save_predictions_to_json(camera_transform.dumpable_list)
-    run_metrics()
+    run_metrics("predictions.json", EVAL_GT[cfg.DATASETS.EVAL_ON])

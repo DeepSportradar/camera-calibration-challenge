@@ -15,7 +15,7 @@ def compute_camera_model(points2d, points3d, output_shape):
     height, width = output_shape
     h = np.eye(3, 4)
     h[2, 3] = 1.0
-    calib = Calib.from_P(h, width=width, height=height)
+    calib = Calib.from_P(np.array(MEAN_H), width=width, height=height)
     # cv2 calibrateCamera requires at least 4 points
     if len(points2d) > 5:
         points2d_ = Point2D(np.array(points2d).T)
@@ -32,7 +32,13 @@ def compute_camera_model(points2d, points3d, output_shape):
                 None,
                 None,
                 None,
-                cv2.CALIB_FIX_ASPECT_RATIO + cv2.CALIB_ZERO_TANGENT_DIST,
+                cv2.CALIB_FIX_K1
+                + cv2.CALIB_FIX_K2
+                + cv2.CALIB_FIX_K3
+                + cv2.CALIB_FIX_K4
+                + cv2.CALIB_FIX_K5
+                + cv2.CALIB_FIX_ASPECT_RATIO
+                + cv2.CALIB_ZERO_TANGENT_DIST,
             )
         except cv2.error as err:
             print(err)

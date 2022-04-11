@@ -84,13 +84,13 @@ The processed dataset is then contained in a `pickle` file in the `dataset` fold
 
 Each key in the dataset is associated with an item which contains the images to be used as input and the Calib object from [calib3d](https://github.com/ispgroupucl/calib3d) library, which is what participants should predict.
 
-Images are creted as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts.
+Images are creted as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts. In this challenge we consider un-distored images only.
 
 The Calib object is built around the K (calibration), T (translation) and R (rotation) matrixes (reference [Camera matrix](https://en.wikipedia.org/wiki/Camera_matrix))
 
 ## Challenge rules
 
-The challenge goal is to obtain the best MSE on images that were not seen during training. In particular, the leaderboards that provide rewards will be built on an unannotated challenge set that will be provided late in June.
+The challenge goal is to obtain the lowest MSE (cm) on images that were not seen during training. In particular, the leaderboards that provide rewards will be built on an unannotated challenge set that will be provided late in June.
 
 The competitors are asked to create models that only rely on the provided data for training. (except for initial weights that can come from well-established public methods pre-trained on public data. This must be clearly stated in publication/report)
 
@@ -98,8 +98,12 @@ Please see the challenge page for more details: <https://deepsportradar.github.i
 
 ## The Baseline
 
-We encurage participants to find innovative solutions to solve the camera
+We encurage participants to find innovative solutions to solve the camera calibration challenge. However, an initial baseline is provieded as example. The baseline is composed by two models: the first is a segmentation model that predicts the 20 lines of the basketball court (`DeepLabv3` in `modeling/example_model.py`); the second finds the 2D intersections in the image space and matches them with the visible 3D locations of the court (see `utils/intersections.py`). If enough intersections points are found (>5) the method `cv2.calibrateCamera` predicts the camera parameters (see `compute_camera_model` in `modeling/example_camera_model.py`). In all the other cases, the model returns an average of the camera parameters in the training set as default.
 
 ## Submission format
+
+The submission format is a single `json` file containing a list of dicts. Each dict should contain all the camera parameters `T`, `K`, `kc`, `R`, `C`, `P`, `Pinv`, `'Kinv`. Note that the evaluation scritp retreives the camera parameters from the Projection Matrix `P`. See the class [calib3d.Calib](https://github.com/ispgroupucl/calib3d/blob/b20694a42a3e043b157dcd9b363833184cc3fcdc/calib3d/calib.py#L155). Please consider that the evaluation script follows the list of images provided: an empty dict will be replaced by a diagonal homography (see `run_metrics` in `engine/example_evaluation.py`).
+
+Once the camera model is provided, the evaluation script projects 6 points from the image space to the 3D coordinates. On these projections the mean squared error is computed.
 
 # Acknowledgments

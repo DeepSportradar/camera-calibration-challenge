@@ -70,6 +70,9 @@ _C.DATASETS.TEST = ""
 _C.DATASETS.NUM_ELEMENTS = 0
 # Enables evaluation mode
 _C.DATASETS.EVALUATION = False
+# Evaluation on val or test split
+_C.DATASETS.EVAL_ON = "val"
+
 
 # -----------------------------------------------------------------------------
 # DataLoader

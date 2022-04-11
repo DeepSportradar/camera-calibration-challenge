@@ -202,5 +202,14 @@ def find_intersections(img: np.ndarray) -> Tuple[List, List]:
         if p1 and p2:
             points2d.append(mid_points([p1, p2]))
             points3d.append(value)
+            x = points2d[-1]
+            firstp = np.array(INTERSECTIONS[sp[0]])
+            secondp = np.array(INTERSECTIONS[sp[1]])
+
+            points2d.append(mid_points([p1, x]))
+            points3d.append(tuple(np.mean((firstp, value), 0)))
+
+            points2d.append(mid_points([p2, x]))
+            points3d.append(tuple(np.mean((secondp, value), 0)))
 
     return points2d, points3d

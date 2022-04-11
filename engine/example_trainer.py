@@ -11,7 +11,6 @@ and
 """
 
 import logging
-import torch
 from torch.utils.tensorboard.writer import SummaryWriter
 import torch.nn.functional as F
 

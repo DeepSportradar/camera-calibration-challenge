@@ -56,6 +56,7 @@ def build_dataset(cfg, transforms, is_train=True, split=None):
             def_min=def_min,
             def_max=def_max,
         )
+        SPLIT = {"val": svds.val, "test": svds.test}
         if is_train:
             kwargs = {
                 "vds": svds.train,
@@ -63,7 +64,7 @@ def build_dataset(cfg, transforms, is_train=True, split=None):
             }
         else:
             kwargs = {
-                "vds": svds.test,
+                "vds": SPLIT[cfg.DATASETS.EVAL_ON],
                 "transform": transforms,
             }
         if cfg.DATASETS.EVALUATION:

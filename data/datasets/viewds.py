@@ -3,8 +3,8 @@
 @contact: d.zambrano@sportradar.com
 
 """
-from typing import Any, Callable, Dict, List, Optional, Tuple
-from tqdm.auto import tqdm
+from typing import Callable, Optional, Tuple
+import os
 import random
 import dataclasses
 import copy
@@ -12,10 +12,8 @@ from calib3d.calib import parameters_to_affine_transform
 
 
 import torch
-import torchvision.transforms as T
 from mlworkflow import TransformedDataset, PickledDataset
 import numpy as np
-import os
 from PIL import Image
 
 

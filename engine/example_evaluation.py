@@ -136,8 +136,8 @@ class CameraTransform:
     def __call__(self, x, y, y_pred):
 
         points2d, points3d = find_intersections(
-            # np.squeeze(y_pred["out"].cpu().numpy().astype(np.float32))
-            np.squeeze(y["target"].cpu().numpy().astype(np.float32))
+            np.squeeze(y_pred["out"].cpu().numpy().astype(np.float32))
+            # np.squeeze(y["target"].cpu().numpy().astype(np.float32))
         )  # here use actual prediction
 
         calib = compute_camera_model(

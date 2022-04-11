@@ -84,7 +84,7 @@ The processed dataset is then contained in a `pickle` file in the `dataset` fold
 
 Each key in the dataset is associated with an item which contains the images to be used as input and the Calib object from [calib3d](https://github.com/ispgroupucl/calib3d) library, which is what participants should predict.
 
-Images are creted as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts. In this challenge we consider un-distored images only.
+Images are creted as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts. In this challenge we consider un-distorted images only.
 
 The Calib object is built around the K (calibration), T (translation) and R (rotation) matrixes (reference [Camera matrix](https://en.wikipedia.org/wiki/Camera_matrix))
 
@@ -102,8 +102,10 @@ We encurage participants to find innovative solutions to solve the camera calibr
 
 ## Submission format
 
-The submission format is a single `json` file containing a list of dicts. Each dict should contain all the camera parameters `T`, `K`, `kc`, `R`, `C`, `P`, `Pinv`, `'Kinv`. Note that the evaluation scritp retreives the camera parameters from the Projection Matrix `P`. See the class [calib3d.Calib](https://github.com/ispgroupucl/calib3d/blob/b20694a42a3e043b157dcd9b363833184cc3fcdc/calib3d/calib.py#L155). Please consider that the evaluation script follows the list of images provided: an empty dict will be replaced by a diagonal homography (see `run_metrics` in `engine/example_evaluation.py`).
+The submission format is a single `json` file containing a list of dicts. Each dict should contain all the camera parameters `T`, `K`, `kc`, `R`, `C`, `P`, `Pinv`, `Kinv`. Note that the evaluation script retreives the camera parameters from the Projection Matrix `P`. See the class [calib3d.Calib](https://github.com/ispgroupucl/calib3d/blob/b20694a42a3e043b157dcd9b363833184cc3fcdc/calib3d/calib.py#L155). Please consider that the evaluation script follows the list of images provided: an empty dict will be replaced by a diagonal homography (see `run_metrics` in `engine/example_evaluation.py`).
 
 Once the camera model is provided, the evaluation script projects 6 points from the image space to the 3D coordinates. On these projections the mean squared error is computed.
+
+The prediction file has to be submitted at the [EvalAI](https://eval.ai/web/challenges/challenge-page/1687/overview) page of the challenge.
 
 # Acknowledgments

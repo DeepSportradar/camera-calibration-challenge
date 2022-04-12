@@ -25,7 +25,10 @@ from modeling.example_camera_model import compute_camera_model
 from utils.intersections import find_intersections
 
 
-EVAL_GT = {"val": "ground_truth_val.json", "test": "ground_truth_test.json"}
+EVAL_GT = {
+    "val": "groundtruth/ground_truth_val.json",
+    "test": "groundtruth/ground_truth_test.json",
+}
 
 TEST_2D_POINTS = Point2D(
     [
@@ -51,7 +54,7 @@ def save_predictions_to_json(
 
 def run_metrics(
     json_file: str = "predictions.json",
-    ground_truth: str = "ground_truth_test.json",
+    ground_truth: str = "groundtruth/ground_truth_test.json",
 ) -> None:
     """Compute metrics from JSON. In case of empty dictionary, a default P is provided.
 

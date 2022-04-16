@@ -82,6 +82,15 @@ python tools/download_dataset.py --dataset-folder ./basketball-instants-dataset 
 
 The processed dataset is then contained in a `pickle` file in the `dataset` folder. Please refer to `.data\datasets\viewds.py` methods as examples of usage. Specifically the class `GenerateSViewDS` applies the required transformations and splits the keys into `train`, `val` and `test`. Please consider that the `test` keys of this dataset are not the ones used for the challenge evaluation (those keys, without annotations, will be provided in a second phase of the challenge). The class `SVIEWDS` is an example of `torch.utils.data.Dataset` for PyTorch users. Finally, note that transformations are applied at each query of the key, thus returning a potentially infinite pairs of image (views) and calibration matrix. A pseudo-random transformation is applied for the `val` and `test` keys, thus views are fixed for these splits.
 
+The challenge uses the split defined by [`DeepSportDatasetSplitter`](https://github.com/DeepSportRadar/camera-calibration-challenge/blob/0d75313576055f67ac9b5cc999e4a9f91ae90e12/data/datasets/viewds.py#L221) which
+1. Uses images from `KS-FR-CAEN`, `KS-FR-LIMOGES` and `KS-FR-ROANNE` arenas for the **testing-set**.
+2. Randomly samples 15% of the remaining images for the **validation-set**
+3. Uses the remaining images for the **training-set**.
+
+The **testing-set** should be used to evaluate your model, both on the public EvalAI leaderboard that provides the temporary ranking, and when communicating about your method.
+
+The **challenge-set** will be shared later, without the labels, and will be used for the official ranking. You are free to use the three sets defined above to build the final model on which your method will be evaluated in the EvalAI submission.
+
 Each key in the dataset is associated with an item which contains the images to be used as input and the Calib object from [calib3d](https://github.com/ispgroupucl/calib3d) library, which is what participants should predict.
 
 Images are creted as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts. In this challenge we consider un-distorted images only.

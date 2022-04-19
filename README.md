@@ -4,7 +4,7 @@ Mantainer: Davide Zambrano from Sportradar (d.zambrano@sportradar.com)
 
 We present the "Camera Calibration Challenge" for ACM MMSports 2022 the 5th International ACM Workshop on Multimedia Content Analysis in Sports. This year, MMSports proposes a competition where participants will compete over State-of-the-art problems applied to real-world sport specific data. The competition is made of 4 individual challenges, each of which is sponsored by [Sportradar](https://www.sportradar.com) with a $1'000.00 prize.
 
-The "Camera Calibration Challenge" aims at predicting the camera calibration parameters from images taken from basketball games.
+The "Camera Calibration Challenge" aims at predicting the camera calibration parameters from images taken from basketball games. Please refer to [Challenge webpage](https://deepsportradar.github.io/challenge.html) for the general challenge rules.
 
 This repo is based on the [Pytorch Project Template](https://github.com/L1aoXingyu/Deep-Learning-Project-Template). We want to thank the authors for providing this tool, please refer to the original repo for the full documentation. This version applies some changes to the original code to specifically adapt it to the "Camera Calibration Challenge" for ACM MMSports 2022.
 
@@ -93,7 +93,7 @@ The **challenge-set** will be shared later, without the labels, and will be used
 
 Each key in the dataset is associated with an item which contains the images to be used as input and the Calib object from [calib3d](https://github.com/ispgroupucl/calib3d) library, which is what participants should predict.
 
-Images are creted as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts. In this challenge we consider un-distorted images only.
+Images are creted as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts. In this challenge we consider un-distorted images only. Camera conventions are described [here](https://gitlab.com/deepsport/deepsport_utilities/-/blob/main/calibration.md).
 
 The Calib object is built around the K (calibration), T (translation) and R (rotation) matrixes (reference [Camera matrix](https://en.wikipedia.org/wiki/Camera_matrix))
 

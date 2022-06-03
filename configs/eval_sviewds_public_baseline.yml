@@ -1,0 +1,39 @@
+MODEL:
+  ARCHITECTURE: "DeepLabv3"
+  NUM_CLASSES: 21
+  LOSS: "cross_entropy"
+  SEGMENTATION_LOSS: True
+  LOSS_FUNCTION: "loss_fn_seg"
+  LOSS_WEIGHT_BACKGROUND: 0.5
+
+INPUT:
+  PIXEL_MEAN: [0.485, 0.456, 0.406]
+  PIXEL_STD: [0.229, 0.224, 0.225]
+  GENERATED_VIEW_SIZE: [480, 270]
+  MULTIPLICATIVE_FACTOR: 2
+  TRANSFORMS: False
+
+SOLVER:
+  OPTIMIZER_NAME: "AdamW"
+  AMSGRAD: True
+  BASE_LR: 0.001
+  WEIGHT_DECAY: 0.0001
+  IMS_PER_BATCH: 14
+  WARMUP_ITERS: 3
+  STEPS: (40000,)
+
+TEST:
+  IMS_PER_BATCH: 1
+  WEIGHT: "logs/sviewds_public_baseline/model_checkpoint_XXX.pt"
+
+DATASETS:
+  TRAIN: "sviewds"
+  TEST: "sviewds"
+  EVALUATION: True
+  EVAL_ON: "test"
+  RUN_METRICS: True
+
+DATALOADER:
+  NUM_WORKERS: 8
+
+OUTPUT_DIR: "logs/sviewds_public_baseline"

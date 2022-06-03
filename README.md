@@ -121,13 +121,13 @@ We encourage participants to find innovative solutions to solve the camera calib
 Once the dataset is downloaded (see [Download and prepare the dataset](#download-and-prepare-the-dataset)), you can train the baseline by running:
 
 ```python
-python tools/train_net.py --config_file configs/train_sviewds_test.yml
+python tools/train_net.py --config_file configs/train_sviewds_public_baseline.yml
 ```
 
 Logs and weights will be saved in the `OUTPUT_DIR` folder specified in the config file; moreover, [Tensorboard](https://pytorch.org/tutorials/intermediate/tensorboard_tutorial.html) events will be saved in the `runs` folder. After the training, you can test the segmentation model using the same config file specifying the `TEST.WEIGHT` path in the parameters:
 
 ```python
-python tools/test_net.py --config_file configs/train_sviewds_test.yml
+python tools/test_net.py --config_file configs/train_sviewds_public_baseline.yml
 ```
 
 The config parameter `DATASET.EVAL_ON` specifies on which split the model will be tested: `val` or `test`.
@@ -137,7 +137,7 @@ The config parameter `DATASET.EVAL_ON` specifies on which split the model will b
 The script `evaluate_net.py` runs the inference on the trained model and generates the `predictions.json` file as required for the submission (see [Submission format](#submission-format)).
 
 ```python
-python tools/evaluate_net.py --config_file configs/eval_sviewds_test.yml
+python tools/evaluate_net.py --config_file configs/eval_sviewds_public_baseline.yml
 ```
 
 Note that the config file used for camera calibration model evaluation is different from the one used for training and testing the segmentation model only. Here, the config parameter `DATASET.EVAL_ON` specifies on which split the model will be tested: `val` or `test`. During evaluation, the dataloader will return now as target the segmentation mask and the groundtruth camera calibration parameters. As explained before, the predicted camera parameters will be computed based on the intersections found with the `find_intersections` method in `utils/intersections.py` and the `compute_camera_model` method in `modeling/example_camera_model.py`. Once the predictions have been saved, if the flag `DATASETS.RUN_METRICS` is set as `True`, the method `run_metrics` in `engine/example_evaluation.py` will compare the camera calibration parameters with the corresponding groundtruth camera calibration parameters (`val` or `test`). Please consider that the `test` keys are not the ones used for the challenge evaluation (those keys, without annotations, will be provided in a second phase of the challenge).

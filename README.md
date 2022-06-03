@@ -2,7 +2,7 @@
 
 # Camera Calibration Challenge
 
-Mantainer: Davide Zambrano from Sportradar (d.zambrano@sportradar.com)
+Maintainer: Davide Zambrano from Sportradar (d.zambrano@sportradar.com)
 
 We present the "Camera Calibration Challenge" for ACM MMSports 2022 the 5th International ACM Workshop on Multimedia Content Analysis in Sports. This year, MMSports proposes a competition where participants will compete over State-of-the-art problems applied to real-world sport specific data. The competition is made of 4 individual challenges, each of which is sponsored by [Sportradar](https://www.sportradar.com) with a $1'000.00 prize.
 
@@ -22,6 +22,7 @@ This repo is based on the [Pytorch Project Template](https://github.com/L1aoXing
   - [The Baseline](#the-baseline)
 
     - [Training the segmentation model](#training-the-segmentation-model)
+    - [Evaluate the camera calibration model](#evaluate-the-camera-calibration-model)
 
   - [Submission format](#submission-format)
 
@@ -29,9 +30,9 @@ This repo is based on the [Pytorch Project Template](https://github.com/L1aoXing
 
 # In a Nutshell
 
-The purpose of this challenge is to predict the camera calibration parameters from a single frame of a basketball game. Participants have access to a dataset of 728 pairs of images and camera calibration parameters. By default these pairs are devided in train (548), val (96) and test (84) splits. Note that this test split is different from the one on which the challenge participants will be evaluated on. Therefore, all the 728 examples can be used for the training purpose.
+The purpose of this challenge is to predict the camera calibration parameters from a single frame of a basketball game. Participants have access to a dataset of 728 pairs of images and camera calibration parameters. By default these pairs are divided in train (548), val (96) and test (84) splits. Note that this test split is different from the one on which the challenge participants will be evaluated on. Therefore, all the 728 examples can be used for the training purpose.
 
-Participants are encuraged to explore different methods to predict the camera calibration parameters. However, a baseline will be provided as described in the [In Details](#in-details) section.
+Participants are encouraged to explore different methods to predict the camera calibration parameters. However, a baseline will be provided as described in the [In Details](#in-details) section.
 
 Predictions will be evaluated based on a [Mean Squared Error](https://en.wikipedia.org/wiki/Mean_squared_error) of the projection error of 6 points--left, center and right extremities at the middle and bottom parts of the frame--in the 3D coordinates.
 
@@ -39,7 +40,7 @@ Predictions will be evaluated based on a [Mean Squared Error](https://en.wikiped
 
 A convenience [bash script](./install.sh) is provided that sets up the python environment needed to run the camera-calibration-challenge project.
 
-The script will try to install the library into a _conda_ environment alongside with all dependencies. The _conda_ evironment name is defaulted to `camera-calibration`, but can be overridden by the user:
+The script will try to install the library into a _conda_ environment alongside with all dependencies. The _conda_ environment name is defaulted to `camera-calibration`, but can be overridden by the user:
 
 ```sh
 ./install.sh [my-conda-env]
@@ -55,7 +56,7 @@ As in the original repo, this project relies on:
 - [PyTorch](https://pytorch.org/) (An open source deep learning platform)
 - [ignite](https://github.com/pytorch/ignite) (High-level library to help with training neural networks in PyTorch)
 
-Moreover, data are handeled by:
+Moreover, data are handled by:
 
 - [deepsport-utilities](https://gitlab.com/deepsport/deepsport_utilities) (A Dataset API)
 
@@ -79,7 +80,7 @@ mkdir basketball-instants-dataset
 unzip -qo ./basketball-instants-dataset.zip -d basketball-instants-dataset
 ```
 
-The dataset has to be pre-proccessed to be used, please run:
+The dataset has to be pre-processed to be used, please run:
 
 ```bash
 python tools/download_dataset.py --dataset-folder ./basketball-instants-dataset --output-folder dataset
@@ -99,7 +100,7 @@ The **challenge-set** will be shared later, without the labels, and will be used
 
 Each key in the dataset is associated with an item which contains the images to be used as input and the Calib object from [calib3d](https://github.com/ispgroupucl/calib3d) library, which is what participants should predict.
 
-Images are creted as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts. In this challenge we consider un-distorted images only. Camera conventions are described [here](https://gitlab.com/deepsport/deepsport_utilities/-/blob/main/calibration.md).
+Images are created as views of basketball games from the original cameras of the Keemotion system. These images can be considered as single frames of a broadcasted basketball game. Indeed, the view creation takes into account the location of the ball, and, in basketball, most of the action is around the KEY area under the rim (you can look at the [Basketball court](https://en.wikipedia.org/wiki/Basketball_court#Table) page and the `utils/intersections.py` file for some definitions). All the games in this dataset are from FIBA courts. In this challenge we consider un-distorted images only. Camera conventions are described [here](https://gitlab.com/deepsport/deepsport_utilities/-/blob/main/calibration.md).
 
 The Calib object is built around the K (calibration), T (translation) and R (rotation) matrixes (reference [Camera matrix](https://en.wikipedia.org/wiki/Camera_matrix))
 
@@ -113,7 +114,7 @@ Please see the challenge page for more details: <https://deepsportradar.github.i
 
 ## The Baseline
 
-We encurage participants to find innovative solutions to solve the camera calibration challenge. However, an initial baseline is provieded as example. The baseline is composed by two models: the first is a segmentation model that predicts the 20 lines of the basketball court (`DeepLabv3` in `modeling/example_model.py`); the second finds the 2D intersections in the image space and matches them with the visible 3D locations of the court (see `utils/intersections.py`). If enough intersections points are found (>5) the method `cv2.calibrateCamera` predicts the camera parameters (see `compute_camera_model` in `modeling/example_camera_model.py`). In all the other cases, the model returns an average of the camera parameters in the training set as default.
+We encourage participants to find innovative solutions to solve the camera calibration challenge. However, an initial baseline is provided as example. The baseline is composed by two models: the first is a segmentation model that predicts the 20 lines of the basketball court (`DeepLabv3` in `modeling/example_model.py`); the second finds the 2D intersections in the image space and matches them with the visible 3D locations of the court (see `utils/intersections.py`). If enough intersections points are found (>5) the method `cv2.calibrateCamera` predicts the camera parameters (see `compute_camera_model` in `modeling/example_camera_model.py`). In all the other cases, the model returns an average of the camera parameters in the training set as default.
 
 ### Training the segmentation model
 
@@ -139,10 +140,16 @@ You can now submit the `predictions.json` on EvalAI for the `Test` phase and ver
 
 ## Submission format
 
-The submission format is a single `json` file containing a list of dicts. Each dict should contain all the camera parameters `T`, `K`, `kc`, `R`, `C`, `P`, `Pinv`, `Kinv`. Note that the evaluation script retreives the camera parameters from the Projection Matrix `P`. See the class [calib3d.Calib](https://github.com/ispgroupucl/calib3d/blob/b20694a42a3e043b157dcd9b363833184cc3fcdc/calib3d/calib.py#L155). Please consider that the evaluation script follows the list of images provided: an empty dict will be replaced by a diagonal homography (see `run_metrics` in `engine/example_evaluation.py`).
+The submission format is a single `json` file containing a list of dicts. Each dict should contain all the camera parameters `T`, `K`, `kc`, `R`, `C`, `P`, `Pinv`, `Kinv`. Note that the evaluation script retrieves the camera parameters from the Projection Matrix `P`. See the class [calib3d.Calib](https://github.com/ispgroupucl/calib3d/blob/b20694a42a3e043b157dcd9b363833184cc3fcdc/calib3d/calib.py#L155). Please consider that the evaluation script follows the list of images provided: an empty dict will be replaced by a diagonal homography (see `run_metrics` in `engine/example_evaluation.py`).
 
 Once the camera model is provided, the evaluation script projects 6 points from the image space to the 3D coordinates. On these projections the mean squared error is computed.
 
 The prediction file has to be submitted at the [EvalAI](https://eval.ai/web/challenges/challenge-page/1687/overview) page of the challenge.
 
 # Acknowledgments
+
+[Sportradar](https://sportradar.com/) and collaborators:
+
+- Gabriel Van Zandycke (g.vanzandycke@sportradar.com)
+- Maxime Istasse (m.istasse@sportradar.com)
+- Vladimir Somers (v.somers@sportradar.com)

@@ -13,7 +13,6 @@ and
 import argparse
 import os
 import sys
-from os import mkdir
 
 import torch
 import torch.nn.functional as F
@@ -100,7 +99,7 @@ def main():
 
     output_dir = cfg.OUTPUT_DIR
     if output_dir and not os.path.exists(output_dir):
-        mkdir(output_dir)
+        os.makedirs(output_dir)
 
     logger = setup_logger("template_model", output_dir, 0, log_filename='train_log.txt')
     logger.info("Using {} GPUS".format(num_gpus))

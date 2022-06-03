@@ -197,4 +197,5 @@ def evaluation(cfg, model, val_loader):
     evaluator.run(val_loader)
 
     save_predictions_to_json(camera_transform.dumpable_list)
-    run_metrics("predictions.json", EVAL_GT[cfg.DATASETS.EVAL_ON])
+    if cfg.DATASETS.RUN_METRICS:
+        run_metrics("predictions.json", EVAL_GT[cfg.DATASETS.EVAL_ON])

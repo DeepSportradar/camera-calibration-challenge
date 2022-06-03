@@ -1,8 +1,4 @@
-[![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/JvMQgMkpkm)
-[![Compete on EvalAI](https://badgen.net/badge/compete%20on/EvalAI/blue)](https://eval.ai/web/challenges/challenge-page/1685/overview)
-[![Win 2x $500](https://badgen.net/badge/win/2x%20%24500/yellow)](http://mmsports.multimedia-computing.de/mmsports2022/challenge.html)
-[![Kaggle Dataset](https://badgen.net/badge/kaggle/dataset/blue)](https://www.kaggle.com/datasets/deepsportradar/basketball-instants-dataset)
-
+[![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/JvMQgMkpkm) [![Compete on EvalAI](https://badgen.net/badge/compete%20on/EvalAI/blue)](https://eval.ai/web/challenges/challenge-page/1685/overview) [![Win 2x $500](https://badgen.net/badge/win/2x%20%24500/yellow)](http://mmsports.multimedia-computing.de/mmsports2022/challenge.html) [![Kaggle Dataset](https://badgen.net/badge/kaggle/dataset/blue)](https://www.kaggle.com/datasets/deepsportradar/basketball-instants-dataset)
 
 # Camera Calibration Challenge
 
@@ -24,6 +20,9 @@ This repo is based on the [Pytorch Project Template](https://github.com/L1aoXing
   - [Download and prepare the dataset](#download-and-prepare-the-dataset)
   - [Challenge rules](#challenge-rules)
   - [The Baseline](#the-baseline)
+
+    - [Training the segmentation model](#training-the-segmentation-model)
+
   - [Submission format](#submission-format)
 
 - [Acknowledgments](#acknowledgments)
@@ -89,6 +88,7 @@ python tools/download_dataset.py --dataset-folder ./basketball-instants-dataset 
 The processed dataset is then contained in a `pickle` file in the `dataset` folder. Please refer to `.data\datasets\viewds.py` methods as examples of usage. Specifically the class `GenerateSViewDS` applies the required transformations and splits the keys into `train`, `val` and `test`. Please consider that the `test` keys of this dataset are not the ones used for the challenge evaluation (those keys, without annotations, will be provided in a second phase of the challenge). The class `SVIEWDS` is an example of `torch.utils.data.Dataset` for PyTorch users. Finally, note that transformations are applied at each query of the key, thus returning a potentially infinite pairs of image (views) and calibration matrix. A pseudo-random transformation is applied for the `val` and `test` keys, thus views are fixed for these splits.
 
 The challenge uses the split defined by [`DeepSportDatasetSplitter`](https://github.com/DeepSportRadar/camera-calibration-challenge/blob/0d75313576055f67ac9b5cc999e4a9f91ae90e12/data/datasets/viewds.py#L221) which
+
 1. Uses images from `KS-FR-CAEN`, `KS-FR-LIMOGES` and `KS-FR-ROANNE` arenas for the **testing-set**.
 2. Randomly samples 15% of the remaining images for the **validation-set**
 3. Uses the remaining images for the **training-set**.
@@ -114,6 +114,28 @@ Please see the challenge page for more details: <https://deepsportradar.github.i
 ## The Baseline
 
 We encurage participants to find innovative solutions to solve the camera calibration challenge. However, an initial baseline is provieded as example. The baseline is composed by two models: the first is a segmentation model that predicts the 20 lines of the basketball court (`DeepLabv3` in `modeling/example_model.py`); the second finds the 2D intersections in the image space and matches them with the visible 3D locations of the court (see `utils/intersections.py`). If enough intersections points are found (>5) the method `cv2.calibrateCamera` predicts the camera parameters (see `compute_camera_model` in `modeling/example_camera_model.py`). In all the other cases, the model returns an average of the camera parameters in the training set as default.
+
+### Training the segmentation model
+
+Once the dataset is downloaded (see [Download and prepare the dataset](#download-and-prepare-the-dataset)), you can train the baseline by running:
+
+```python
+python tools/train_net.py --config_file configs/train_sviewds_test.yml
+```
+
+Logs and weights will be saved in the `OUTPUT_DIR` folder specified in the config file; moreover, [Tensorboard](https://pytorch.org/tutorials/intermediate/tensorboard_tutorial.html) events will be saved in the `runs` folder. After the training, you can test the segmentation model using the same config file specifying the `WEIGHT` path in the parameters:
+
+```python
+python tools/test_net.py --config_file configs/train_sviewds_test.yml
+```
+
+The config parameter `DATASET.EVAL_ON` specifies on which split the model will be tested: `val` or `test`.
+
+### Evaluate the camera calibration model
+
+The script `evaluate_net.py` runs the inference on the trained model and generates the `predictions.json` file as required for the submission (see [Submission format](#submission-format)). The config parameter `DATASET.EVAL_ON` specifies on which split the model will be tested: `val` or `test`. As explained before, the camera parameters will be generated based on the intersections found with the `find_intersections` method in `utils/intersections.py` and the `compute_camera_model` method in `modeling/example_camera_model.py`. Once the predictions have been saved, the method `run_metrics` in `engine/example_evaluation.py` will compare the camera calibration parameters with the corresponding groundtruth (`val` or `test`). Please consider that the `test` keys are not the ones used for the challenge evaluation (those keys, without annotations, will be provided in a second phase of the challenge).
+
+You can now submit the `predictions.json` on EvalAI for the `Test` phase and verify that the results are the same.
 
 ## Submission format
 

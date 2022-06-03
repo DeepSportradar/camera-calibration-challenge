@@ -11,7 +11,10 @@ and
 
 """
 
+import torch.nn
 from torch.utils import data
+
+from yacs.config import CfgNode
 
 from .datasets.mnist import MNIST
 from .datasets.viewds import VIEWDS
@@ -21,16 +24,18 @@ from .transforms import build_transforms
 DATASETS = {"mnist": MNIST, "viewds": VIEWDS, "sviewds": SVIEWDS}
 
 
-def build_dataset(cfg, transforms, is_train=True, split=None):
+def build_dataset(
+    cfg: CfgNode, transforms: torch.nn.Module, is_train: bool = True
+) -> data.Dataset:
     """Create dataset.
 
     Args:
-        cfg (_type_): config file
-        transforms (_type_): _description_
-        is_train (bool, optional): _description_. Defaults to True.
+        cfg (CfgNode): config file
+        transforms (torch.nn.Module): Applies transformation to the input data.
+        is_train (bool, optional): Train or eval the model. Defaults to True.
 
     Returns:
-        _type_: _description_
+        datasets (torch.utils.data.Dataset): the dataset to be used.
     """
 
     kwargs = {
@@ -76,15 +81,15 @@ def build_dataset(cfg, transforms, is_train=True, split=None):
     return datasets
 
 
-def make_data_loader(cfg, is_train=True):
+def make_data_loader(cfg: CfgNode, is_train: bool = True) -> data.DataLoader:
     """Create the data loader.
 
     Args:
-        cfg (_type_): _description_
-        is_train (bool, optional): _description_. Defaults to True.
+        cfg (CfgNode): config file.
+        is_train (bool, optional): _Train or eval the model. Defaults to True.
 
     Returns:
-        _type_: _description_
+        data_loader (data.Dataset): torch Dataloader
     """
     if is_train:
         batch_size = cfg.SOLVER.IMS_PER_BATCH

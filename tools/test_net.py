@@ -48,7 +48,7 @@ def main():
     if output_dir and not os.path.exists(output_dir):
         mkdir(output_dir)
 
-    logger = setup_logger("template_model", output_dir, 0)
+    logger = setup_logger("template_model", output_dir, 0, log_filename='test_log.txt')
     logger.info("Using {} GPUS".format(num_gpus))
     logger.info(args)
 

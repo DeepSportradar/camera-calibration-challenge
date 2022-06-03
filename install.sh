@@ -68,11 +68,10 @@ conda install pytorch torchvision cudatoolkit=11.3 -c pytorch
 
 echo $GREEN"Success"$NC
 
-# Minimap installation
+# Camera Calibration dependencies
 echo
-echo $CYAN"Installing camera-calibration project in edit mode with associated dependencices"$NC
+echo $CYAN"Installing camera-calibration project dependencices"$NC
 pip install -r requirements.txt
-pip install -e .
 
 echo $GREEN"Success"$NC
 

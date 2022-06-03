@@ -20,11 +20,11 @@ SOLVER:
   WEIGHT_DECAY: 0.0001
   IMS_PER_BATCH: 5
   WARMUP_ITERS: 3
-  STEPS: (20000,)
+  STEPS: (40000,)
 
 TEST:
   IMS_PER_BATCH: 5
-  WEIGHT: ""
+  WEIGHT: "logs/sviewds_public_baseline/model_checkpoint_XXX.pt"
 
 DATASETS:
   TRAIN: "sviewds"
@@ -33,4 +33,4 @@ DATASETS:
 DATALOADER:
   NUM_WORKERS: 8
 
-OUTPUT_DIR: "logs/sviewds_baseline_exp_v6"
+OUTPUT_DIR: "logs/sviewds_public_baseline"

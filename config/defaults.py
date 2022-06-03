@@ -72,6 +72,8 @@ _C.DATASETS.NUM_ELEMENTS = 0
 _C.DATASETS.EVALUATION = False
 # Evaluation on val or test split
 _C.DATASETS.EVAL_ON = "val"
+# Evaluation on val or test split
+_C.DATASETS.RUN_METRICS = False
 
 
 # -----------------------------------------------------------------------------

@@ -124,7 +124,7 @@ Once the dataset is downloaded (see [Download and prepare the dataset](#download
 python tools/train_net.py --config_file configs/train_sviewds_test.yml
 ```
 
-Logs and weights will be saved in the `OUTPUT_DIR` folder specified in the config file; moreover, [Tensorboard](https://pytorch.org/tutorials/intermediate/tensorboard_tutorial.html) events will be saved in the `runs` folder. After the training, you can test the segmentation model using the same config file specifying the `WEIGHT` path in the parameters:
+Logs and weights will be saved in the `OUTPUT_DIR` folder specified in the config file; moreover, [Tensorboard](https://pytorch.org/tutorials/intermediate/tensorboard_tutorial.html) events will be saved in the `runs` folder. After the training, you can test the segmentation model using the same config file specifying the `TEST.WEIGHT` path in the parameters:
 
 ```python
 python tools/test_net.py --config_file configs/train_sviewds_test.yml

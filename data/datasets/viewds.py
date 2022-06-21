@@ -255,23 +255,22 @@ class DeepSportDatasetSplitter:  # pylint: disable=too-few-public-methods
             k for k in keys if k.arena_label in self.split[testing_fold]
         ]
 
-        remaining_arena_labels = [
-            label
-            for f in self.folds.replace(testing_fold, "")
-            for label in self.split[f]
+        validation_fold = self.folds[1]
+        validation_keys = [
+            k for k in keys if k.arena_label in self.split[validation_fold]
         ]
-        remaining_keys = [
+        remaining_folds = self.folds.replace(testing_fold, "")
+        remaining_folds = remaining_folds.replace(validation_fold, "")
+        remaining_arena_labels = [
+            label for f in remaining_folds for label in self.split[f]
+        ]
+        training_keys = [
             k for k in keys if k.arena_label in remaining_arena_labels
         ]
 
         # Backup random seed
         random_state = random.getstate()
         random.seed(fold)
-
-        validation_keys = random.sample(
-            remaining_keys, len(remaining_keys) * self.validation_pc // 100
-        )
-        training_keys = [k for k in remaining_keys if k not in validation_keys]
 
         additional_keys = [
             k
@@ -323,7 +322,7 @@ class ApplyRandomTransform(CleverViewRandomCropperTransform):
         """
         def -  definition in pixels per meters. (i.e. 60px/m)
         """
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, def_min=def_min, def_max=def_max, **kwargs)
         self.trials = trials
 
     def _apply_transform_once(self, key, item):

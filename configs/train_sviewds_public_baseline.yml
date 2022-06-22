@@ -10,7 +10,7 @@ INPUT:
   PIXEL_MEAN: [0.485, 0.456, 0.406]
   PIXEL_STD: [0.229, 0.224, 0.225]
   GENERATED_VIEW_SIZE: [480, 270]
-  MULTIPLICATIVE_FACTOR: 2
+  MULTIPLICATIVE_FACTOR: 1
   TRANSFORMS: False
 
 SOLVER:
@@ -24,7 +24,7 @@ SOLVER:
 
 TEST:
   IMS_PER_BATCH: 5
-  WEIGHT: "logs/sviewds_public_baseline/model_checkpoint_XXX.pt"
+  WEIGHT: "logs/sviewds_public_baseline/model_best.pkl"
 
 DATASETS:
   TRAIN: "sviewds"

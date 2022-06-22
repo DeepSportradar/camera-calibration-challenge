@@ -20,9 +20,7 @@ from utils.logger import setup_logger
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="PyTorch Template MNIST Inference"
-    )
+    parser = argparse.ArgumentParser(description="PyTorch Template MNIST Inference")
     parser.add_argument(
         "--config_file", default="", help="path to config file", type=str
     )
@@ -35,9 +33,7 @@ def main():
 
     args = parser.parse_args()
 
-    num_gpus = (
-        int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
-    )
+    num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
 
     if args.config_file != "":
         cfg.merge_from_file(args.config_file)
@@ -48,9 +44,7 @@ def main():
     if output_dir and not os.path.exists(output_dir):
         mkdir(output_dir)
 
-    logger = setup_logger(
-        "template_model", output_dir, 0, log_filename="test_log.txt"
-    )
+    logger = setup_logger("template_model", output_dir, 0, log_filename="test_log.txt")
     logger.info("Using {} GPUS".format(num_gpus))
     logger.info(args)
 
@@ -62,7 +56,10 @@ def main():
     logger.info("Running with config:\n{}".format(cfg))
 
     model = build_model(cfg)
-    model.load_state_dict(torch.load(cfg.TEST.WEIGHT)["model"])
+    if cfg.TEST.WEIGHT[-3:] == "pkl":
+        model.load_state_dict(torch.load(cfg.TEST.WEIGHT))
+    else:
+        model.load_state_dict(torch.load(cfg.TEST.WEIGHT)["model"])
     val_loader = make_data_loader(cfg, is_train=False)
 
     inference(cfg, model, val_loader)

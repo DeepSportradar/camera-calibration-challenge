@@ -17,11 +17,16 @@ from torch.utils import data
 from yacs.config import CfgNode
 
 from .datasets.mnist import MNIST
-from .datasets.viewds import VIEWDS
+from .datasets.viewds import VIEWDS, CHALLENGE
 from .datasets.viewds import SVIEWDS, GenerateSViewDS
 from .transforms import build_transforms
 
-DATASETS = {"mnist": MNIST, "viewds": VIEWDS, "sviewds": SVIEWDS}
+DATASETS = {
+    "mnist": MNIST,
+    "viewds": VIEWDS,
+    "sviewds": SVIEWDS,
+    "challenge": CHALLENGE,
+}
 
 
 def build_dataset(
@@ -44,6 +49,8 @@ def build_dataset(
         "transform": transforms,
         "download": False,
     }
+    if cfg.DATASETS.TEST == "challenge":
+        return CHALLENGE("CHALLENGE", transform=transforms)
     if cfg.DATASETS.TRAIN == "sviewds":
         width, height = (
             cfg.INPUT.MULTIPLICATIVE_FACTOR * cfg.INPUT.GENERATED_VIEW_SIZE[0],

@@ -28,10 +28,10 @@ TEST:
 
 DATASETS:
   TRAIN: "sviewds"
-  TEST: "sviewds"
+  TEST: "challenge"
   EVALUATION: True
   EVAL_ON: "test"
-  RUN_METRICS: True
+  RUN_METRICS: False
 
 DATALOADER:
   NUM_WORKERS: 8

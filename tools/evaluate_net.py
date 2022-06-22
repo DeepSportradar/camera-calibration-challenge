@@ -48,7 +48,9 @@ def main():
     if output_dir and not os.path.exists(output_dir):
         mkdir(output_dir)
 
-    logger = setup_logger("template_model", output_dir, 0, log_filename='evaluation_log.txt')
+    logger = setup_logger(
+        "template_model", output_dir, 0, log_filename="evaluation_log.txt"
+    )
     logger.info("Using {} GPUS".format(num_gpus))
     logger.info(args)
 
@@ -60,7 +62,10 @@ def main():
     logger.info("Running with config:\n{}".format(cfg))
 
     model = build_model(cfg)
-    model.load_state_dict(torch.load(cfg.TEST.WEIGHT)["model"])
+    if cfg.TEST.WEIGHT[-3:] == "pkl":
+        model.load_state_dict(torch.load(cfg.TEST.WEIGHT))
+    else:
+        model.load_state_dict(torch.load(cfg.TEST.WEIGHT)["model"])
     val_loader = make_data_loader(cfg, is_train=False)
 
     evaluation(cfg, model, val_loader)

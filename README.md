@@ -24,13 +24,15 @@ This repo is based on the [Pytorch Project Template](https://github.com/L1aoXing
     - [Training the segmentation model](#training-the-segmentation-model)
     - [Evaluate the camera calibration model](#evaluate-the-camera-calibration-model)
 
+  - [CHALLENGE set](#challeng-eset)
+
   - [Submission format](#submission-format)
 
 - [Acknowledgments](#acknowledgments)
 
 # In a Nutshell
 
-The purpose of this challenge is to predict the camera calibration parameters from a single frame of a basketball game. Participants have access to a dataset of 728 pairs of images and camera calibration parameters. By default these pairs are divided in train (548), val (96) and test (84) splits. Note that this test split is different from the one on which the challenge participants will be evaluated on. Therefore, all the 728 examples can be used for the training purpose.
+The purpose of this challenge is to predict the camera calibration parameters from a single frame of a basketball game. Participants have access to a dataset of 728 pairs of images and camera calibration parameters. By default these pairs are divided in train (480), val (164) and test (84) splits. Note that this test split is different from the one on which the challenge participants will be evaluated on. Therefore, all the 728 examples can be used for the training purpose.
 
 Participants are encouraged to explore different methods to predict the camera calibration parameters. However, a baseline will be provided as described in the [In Details](#in-details) section.
 
@@ -145,6 +147,31 @@ Note that the config file used for camera calibration model evaluation is differ
 You can now submit the `predictions.json` on EvalAI for the `Test` phase and verify that the results are the same.
 
 When the challenge set will be released, you will need to set `DATASETS.RUN_METRICS` as `False` and generate the prediction only.
+
+# CHALLENGE set
+
+This section explains how to generate the `predictions.json` file for the CHALLENGE set.
+
+First of all, unzip the file in `dataset/challenge_set.zip` as:
+
+```bash
+unzip dataset/challenge_set.zip -d .
+```
+
+You now have the images in the CHALLENGE folder. For convenience, the images have been generated of size `[960, 540]` (`INPUT.MULTIPLICATIVE_FACTOR: 2`). The relative evaluation script will consider this resolution.
+
+To run the inference on these images you will need to modify your config file as:
+
+- `DATASETS.TEST: "challenge"`
+- `DATASETS.RUN_METRICS: False`
+
+The config file `configs/eval_challenge.yml` is provided as an example. Then run:
+
+```python
+python tools/evaluate_net.py --config_file configs/eval_challenge.yml
+```
+
+This will create the `predictions.json` file needed to be updated in [EvalAI](https://eval.ai/web/challenges/challenge-page/1687/overview).
 
 ## Submission format
 

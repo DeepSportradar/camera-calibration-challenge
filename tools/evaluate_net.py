@@ -20,7 +20,9 @@ from utils.logger import setup_logger
 
 
 def main():
-    parser = argparse.ArgumentParser(description="PyTorch Template MNIST Inference")
+    parser = argparse.ArgumentParser(
+        description="PyTorch Template MNIST Inference"
+    )
     parser.add_argument(
         "--config_file", default="", help="path to config file", type=str
     )
@@ -33,7 +35,9 @@ def main():
 
     args = parser.parse_args()
 
-    num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
+    num_gpus = (
+        int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
+    )
 
     if args.config_file != "":
         cfg.merge_from_file(args.config_file)

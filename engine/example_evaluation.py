@@ -146,7 +146,9 @@ class CameraTransform:
             # np.squeeze(y["target"].cpu().numpy().astype(np.float32))
         )  # here use actual prediction
 
-        calib = compute_camera_model(points2d, points3d, (self.height, self.width))
+        calib = compute_camera_model(
+            points2d, points3d, (self.height, self.width)
+        )
         data = {
             "numper of points2d": len(points2d),
         }
@@ -198,7 +200,9 @@ def evaluation(cfg, model, val_loader):
     def print_validation_results(engine):
         metrics = evaluator.state.metrics
         mse = metrics["mse"] if cfg.DATASETS.TEST == "sviewds" else 0.0
-        logger.info("Camera Evaluation Overall Results - MSE: {:.3f}".format(mse))
+        logger.info(
+            "Camera Evaluation Overall Results - MSE: {:.3f}".format(mse)
+        )
 
     evaluator.run(val_loader)
 

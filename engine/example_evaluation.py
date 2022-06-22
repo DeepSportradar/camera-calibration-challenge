@@ -78,8 +78,10 @@ def run_metrics(
 
     accuracy = 0
     mse_ = []
+    len_set = 0
 
     for dat, gt in zip(obj, obj_gt[1:]):
+        len_set += 1
         predicted_P = dat.get("P", None)
         if not predicted_P:
             calib = Calib.from_P(
@@ -104,6 +106,7 @@ def run_metrics(
         y = calib_gt.project_2D_to_3D(test_2d_ponts, Z=0)
 
         mse_.append(np.sqrt(np.square(np.subtract(y_pred, y)).mean()))
+    accuracy /= len_set
     print(f"Accuracy: {accuracy}, discounted MSE: {np.mean(mse_)} cm")
 
 
@@ -143,9 +146,7 @@ class CameraTransform:
             # np.squeeze(y["target"].cpu().numpy().astype(np.float32))
         )  # here use actual prediction
 
-        calib = compute_camera_model(
-            points2d, points3d, (self.height, self.width)
-        )
+        calib = compute_camera_model(points2d, points3d, (self.height, self.width))
         data = {
             "numper of points2d": len(points2d),
         }
@@ -197,9 +198,7 @@ def evaluation(cfg, model, val_loader):
     def print_validation_results(engine):
         metrics = evaluator.state.metrics
         mse = metrics["mse"] if cfg.DATASETS.TEST == "sviewds" else 0.0
-        logger.info(
-            "Camera Evaluation Overall Results - MSE: {:.3f}".format(mse)
-        )
+        logger.info("Camera Evaluation Overall Results - MSE: {:.3f}".format(mse))
 
     evaluator.run(val_loader)
 

@@ -23,9 +23,7 @@ def build_transforms(cfg, is_train=True):
         mean=cfg.INPUT.PIXEL_MEAN, std=cfg.INPUT.PIXEL_STD
     )
     if cfg.INPUT.TRANSFORMS == False:
-        transform = T.Compose(
-            [T.ToTensor(), normalize_transform]
-        )
+        transform = T.Compose([T.ToTensor(), normalize_transform])
         return transform
     if is_train:
         transform = T.Compose(

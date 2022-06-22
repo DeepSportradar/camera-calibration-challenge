@@ -28,7 +28,7 @@ TEST:
 
 DATASETS:
   TRAIN: "sviewds"
-  TEST: "sviewds"
+  TEST: "challenge"
   EVALUATION: True
   EVAL_ON: "test"
   RUN_METRICS: True

@@ -135,6 +135,7 @@ class CameraTransform:
         )
         self.test_2d_ponts = TEST_2D_POINTS * [[self.width], [self.height]]
         self.dumpable_list = []
+        self.is_challenge = cfg.DATASETS.TEST == "challenge"
 
     def __call__(self, x, y, y_pred):
         points2d, points3d = find_intersections(
@@ -145,11 +146,6 @@ class CameraTransform:
         calib = compute_camera_model(
             points2d, points3d, (self.height, self.width)
         )
-        calib_gt = Calib.from_P(
-            np.squeeze(y["calib"].cpu().numpy().astype(np.float32)),
-            width=self.width,
-            height=self.height,
-        )
         data = {
             "numper of points2d": len(points2d),
         }
@@ -158,6 +154,13 @@ class CameraTransform:
         self.dumpable_list.append(data)
 
         y_pred = calib.project_2D_to_3D(self.test_2d_ponts, Z=0)
+        if self.is_challenge:
+            return torch.as_tensor(y_pred)
+        calib_gt = Calib.from_P(
+            np.squeeze(y["calib"].cpu().numpy().astype(np.float32)),
+            width=self.width,
+            height=self.height,
+        )
         y = calib_gt.project_2D_to_3D(self.test_2d_ponts, Z=0)
 
         return (torch.as_tensor(y_pred), torch.as_tensor(y))
@@ -177,19 +180,23 @@ def evaluation(cfg, model, val_loader):
     logger.info("Start evaluation")
     cm = confusion_matrix.ConfusionMatrix(num_classes=21)
     camera_transform = CameraTransform(cfg)
+    metrics = {"mse": MeanAbsoluteError()}
+    if cfg.DATASETS.TEST == "challenge":
+        metrics = None
 
     evaluator = create_supervised_evaluator(
         model,
-        metrics={"mse": MeanAbsoluteError()},
+        metrics=metrics,
         device=device,
         output_transform=camera_transform,
     )
 
     # adding handlers using `evaluator.on` decorator API
+
     @evaluator.on(Events.EPOCH_COMPLETED)
     def print_validation_results(engine):
         metrics = evaluator.state.metrics
-        mse = metrics["mse"]
+        mse = metrics["mse"] if cfg.DATASETS.TEST == "sviewds" else 0.0
         logger.info(
             "Camera Evaluation Overall Results - MSE: {:.3f}".format(mse)
         )

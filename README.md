@@ -155,7 +155,7 @@ This section explains how to generate the `predictions.json` file for the CHALLE
 First of all, unzip the file in `dataset/challenge_set.zip` as:
 
 ```bash
-unzip dataset/challenge_set.zip -d .
+unzip dataset/challenge_set.zip -d .e
 ```
 
 You now have the images in the CHALLENGE folder. For convenience, the images have been generated of size `[960, 540]` (`INPUT.MULTIPLICATIVE_FACTOR: 2`). The relative evaluation script will consider this resolution.
@@ -165,7 +165,7 @@ To run the inference on these images you will need to modify your config file as
 - `DATASETS.TEST: "challenge"`
 - `DATASETS.RUN_METRICS: False`
 
-The config file `configs/eval_challenge.yml` is provided as an example. Then run:
+The config file `configs/eval_challenge.yml` is provided as an example. Thn run:
 
 ```python
 python tools/evaluate_net.py --config_file configs/eval_challenge.yml
@@ -173,7 +173,7 @@ python tools/evaluate_net.py --config_file configs/eval_challenge.yml
 
 This will create the `predictions.json` file needed to be updated in [EvalAI](https://eval.ai/web/challenges/challenge-page/1687/overview).
 
-**NOTE: the CHALLENGE predictions are in the numeric order of the keys which correspond to the image filename: '0.png', '1.png', '2.png', '3.png' ...**
+**NOTE: the CHALLENGE ground_truths and predictions are in the keys numeric order, which corresponds to the relative image filename: '0.png', '1.png', '2.png', '3.png' ...**
 
 ## Submission format
 

@@ -155,7 +155,7 @@ This section explains how to generate the `predictions.json` file for the CHALLE
 First of all, unzip the file in `dataset/challenge_set.zip` as:
 
 ```bash
-unzip dataset/challenge_set.zip -d .e
+unzip dataset/challenge_set.zip -d .
 ```
 
 You now have the images in the CHALLENGE folder. For convenience, the images have been generated of size `[960, 540]` (`INPUT.MULTIPLICATIVE_FACTOR: 2`). The relative evaluation script will consider this resolution.
@@ -165,7 +165,7 @@ To run the inference on these images you will need to modify your config file as
 - `DATASETS.TEST: "challenge"`
 - `DATASETS.RUN_METRICS: False`
 
-The config file `configs/eval_challenge.yml` is provided as an example. Thn run:
+The config file `configs/eval_challenge.yml` is provided as an example. Then, run:
 
 ```python
 python tools/evaluate_net.py --config_file configs/eval_challenge.yml

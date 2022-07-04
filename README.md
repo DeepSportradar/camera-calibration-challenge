@@ -148,7 +148,7 @@ You can now submit the `predictions.json` on EvalAI for the `Test` phase and ver
 
 When the challenge set will be released, you will need to set `DATASETS.RUN_METRICS` as `False` and generate the prediction only.
 
-# CHALLENGE set
+## CHALLENGE set
 
 This section explains how to generate the `predictions.json` file for the CHALLENGE set.
 
@@ -165,13 +165,15 @@ To run the inference on these images you will need to modify your config file as
 - `DATASETS.TEST: "challenge"`
 - `DATASETS.RUN_METRICS: False`
 
-The config file `configs/eval_challenge.yml` is provided as an example. Then run:
+The config file `configs/eval_challenge.yml` is provided as an example. Then, run:
 
 ```python
 python tools/evaluate_net.py --config_file configs/eval_challenge.yml
 ```
 
 This will create the `predictions.json` file needed to be updated in [EvalAI](https://eval.ai/web/challenges/challenge-page/1687/overview).
+
+**NOTE: the CHALLENGE ground_truths and predictions are in the keys numeric order, which corresponds to the relative image filename: '0.png', '1.png', '2.png', '3.png' ...**
 
 ## Submission format
 

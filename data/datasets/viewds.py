@@ -160,7 +160,7 @@ class CHALLENGE(torch.utils.data.Dataset):
     def __getitem__(self, index):
         "Generates one sample of data"
         # Select sample
-        fname = self.list_IDs[index]
+        fname = f"{index}.png"
 
         # Load data
         img = Image.open(os.path.join(self.path, f"{fname}"))

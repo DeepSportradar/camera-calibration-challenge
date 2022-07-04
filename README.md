@@ -118,6 +118,14 @@ Please see the challenge page for more details: <https://deepsportradar.github.i
 
 We encourage participants to find innovative solutions to solve the camera calibration challenge. However, an initial baseline is provided as example. The baseline is composed by two models: the first is a segmentation model that predicts the 20 lines of the basketball court (`DeepLabv3` in `modeling/example_model.py`); the second finds the 2D intersections in the image space and matches them with the visible 3D locations of the court (see `utils/intersections.py`). If enough intersections points are found (>5) the method `cv2.calibrateCamera` predicts the camera parameters (see `compute_camera_model` in `modeling/example_camera_model.py`). In all the other cases, the model returns an average of the camera parameters in the training set as default.
 
+You can download the baseline weights as:
+
+```bash
+wget https://arena-data.keemotion.com/tmp/gva/model_best.pkl
+```
+
+Then move it into `logs/sviewds_public_baseline`.
+
 ### Training the segmentation model
 
 Once the dataset is downloaded (see [Download and prepare the dataset](#download-and-prepare-the-dataset)), you can train the baseline by running:
@@ -152,10 +160,11 @@ When the challenge set will be released, you will need to set `DATASETS.RUN_METR
 
 This section explains how to generate the `predictions.json` file for the CHALLENGE set.
 
-First of all, unzip the file in `dataset/challenge_set.zip` as:
+Download the dataset zip file and unzip it as:
 
 ```bash
-unzip dataset/challenge_set.zip -d .
+wget https://arena-data.keemotion.com/tmp/gva/challenge_set.zip
+unzip challenge_set.zip -d .
 ```
 
 You now have the images in the CHALLENGE folder. For convenience, the images have been generated of size `[960, 540]` (`INPUT.MULTIPLICATIVE_FACTOR: 2`). The relative evaluation script will consider this resolution.

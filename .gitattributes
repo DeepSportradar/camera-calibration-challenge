@@ -1,2 +1,0 @@
-dataset/challenge_set.zip filter=lfs diff=lfs merge=lfs -text
-logs/sviewds_public_baseline/model_best.pkl filter=lfs diff=lfs merge=lfs -text

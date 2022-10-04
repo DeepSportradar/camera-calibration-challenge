@@ -4,9 +4,25 @@
 
 Maintainer: Davide Zambrano from Sportradar (d.zambrano@sportradar.com)
 
+## ** The DeepSportRadar Challenges will come back next year (2023) with some improvements, stay tuned on our [Discord channel](https://discord.gg/JvMQgMkpkm)! **
+
 We present the "Camera Calibration Challenge" for ACM MMSports 2022 the 5th International ACM Workshop on Multimedia Content Analysis in Sports. This year, MMSports proposes a competition where participants will compete over State-of-the-art problems applied to real-world sport specific data. The competition is made of 4 individual challenges, each of which is sponsored by [Sportradar](https://www.sportradar.com) with a $1'000.00 prize.
 
 The "Camera Calibration Challenge" aims at predicting the camera calibration parameters from images taken from basketball games. Please refer to [Challenge webpage](https://deepsportradar.github.io/challenge.html) for the general challenge rules.
+
+If you use any DeepSportradar dataset in your research or wish to refer to the baseline results and discussion published in [our paper](https://arxiv.org/abs/2208.08190), please use the following BibTeX entry:
+
+    @inproceedings{
+    Van_Zandycke_2022,
+    author = {Gabriel Van Zandycke and Vladimir Somers and Maxime Istasse and Carlo Del Don and Davide Zambrano},
+	title = {{DeepSportradar}-v1: Computer Vision Dataset for Sports Understanding with High Quality Annotations},
+	booktitle = {Proceedings of the 5th International {ACM} Workshop on Multimedia Content Analysis in Sports},
+	publisher = {{ACM}},
+    year = 2022,
+	month = {oct},
+    doi = {10.1145/3552437.3555699},
+    url = {https://doi.org/10.1145%2F3552437.3555699}
+    }
 
 This repo is based on the [Pytorch Project Template](https://github.com/L1aoXingyu/Deep-Learning-Project-Template). We want to thank the authors for providing this tool, please refer to the original repo for the full documentation. This version applies some changes to the original code to specifically adapt it to the "Camera Calibration Challenge" for ACM MMSports 2022.
 
